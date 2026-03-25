@@ -2,7 +2,15 @@
   "permissions": {
     "allow": [
       "Bash(grep -E \"^d|sql$\")",
-      "Bash(xargs wc:*)"
+      "Bash(xargs wc:*)",
+      "Bash(xargs grep:*)",
+      "Bash(find src/lua -name *.hpp -o -name *.cpp)",
+      "Bash(find data:*)",
+      "Bash(ls -la src/database/*.cpp)",
+      "Bash(grep -rn \"global_storage\\\\|GlobalStorage\" data/libs data/scripts --include=*.lua)",
+      "Bash(find src/lua -name *game* -type f)",
+      "Bash(find src/lua -name *.cpp -exec grep -l \"StorageValue\\\\|KV\\\\|kv\" {})",
+      "Bash(2)"
     ]
   }
 }

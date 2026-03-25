@@ -800,6 +800,51 @@ CREATE TABLE IF NOT EXISTS `kv_store` (
   PRIMARY KEY (`key_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Table structure `epic_monsters_config`
+CREATE TABLE IF NOT EXISTS `epic_monsters_config` (
+    `id`           int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `enabled`      tinyint(1)       NOT NULL DEFAULT 1     COMMENT 'Enable/disable the entire epic monster system',
+    `spawn_chance` int(3)           NOT NULL DEFAULT 5     COMMENT 'Base % chance per monster spawn to become epic (0-100)',
+    `title`        varchar(64)      NOT NULL DEFAULT 'Epic' COMMENT 'Display title shown in look description',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `epic_monsters_config` (`enabled`, `spawn_chance`, `title`) VALUES (1, 5, 'Epic');
+
+-- Table structure `epic_monsters_scaling`
+CREATE TABLE IF NOT EXISTS `epic_monsters_scaling` (
+    `id`              int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `difficulty`      enum('normal','nightmare','hell') NOT NULL COMMENT 'Epic difficulty tier',
+    `weight`          int(10)          NOT NULL DEFAULT 10   COMMENT 'Relative weight for weighted-random difficulty selection',
+    `skull`           int(3)           NOT NULL DEFAULT 3    COMMENT 'Skulls_t enum value: 3=WHITE, 4=RED, 5=BLACK',
+    `loot_bonus`      float            NOT NULL DEFAULT 1.0  COMMENT 'Extra loot factor multiplier added on top of base roll',
+    `hp_scale`        float            NOT NULL DEFAULT 1.5  COMMENT 'Max HP multiplier',
+    `speed_scale`     float            NOT NULL DEFAULT 1.0  COMMENT 'Base speed multiplier (1.0 = no change)',
+    `xp_scale`        float            NOT NULL DEFAULT 1.5  COMMENT 'Bonus XP multiplier granted to killers',
+    `damage_scale`    float            NOT NULL DEFAULT 1.3  COMMENT 'Damage boost factor used by Extra Strong ability',
+    `abilities_count` int(2)           NOT NULL DEFAULT 1    COMMENT 'Number of random abilities to grant',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_difficulty` (`difficulty`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `epic_monsters_scaling` (`difficulty`, `weight`, `skull`, `loot_bonus`, `hp_scale`, `speed_scale`, `xp_scale`, `damage_scale`, `abilities_count`) VALUES
+('normal',    60, 3, 1.0, 1.5, 1.0, 1.5, 1.3, 1),
+('nightmare', 30, 4, 1.5, 2.0, 1.0, 2.0, 1.6, 2),
+('hell',      10, 5, 2.5, 3.0, 1.0, 3.0, 2.0, 3);
+
+-- Table structure `epic_monsters_prefixes`
+CREATE TABLE IF NOT EXISTS `epic_monsters_prefixes` (
+    `id`      int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `prefix`  varchar(32)      NOT NULL    COMMENT 'Prefix word shown before monster name (e.g. Cursed, Ancient)',
+    `enabled` tinyint(1)       NOT NULL DEFAULT 1 COMMENT 'Set to 0 to disable this prefix without deleting it',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `epic_monsters_prefixes` (`prefix`, `enabled`) VALUES
+('Cursed', 1), ('Damned', 1), ('Forsaken', 1), ('Ancient', 1), ('Cruel', 1), ('Vile', 1),
+('Infernal', 1), ('Wicked', 1), ('Merciless', 1), ('Savage', 1), ('Burning', 1),
+('Fallen', 1), ('Feral', 1), ('Rabid', 1), ('Primal', 1), ('Shadow', 1), ('Mad', 1);
+
 -- Create Account god/god
 INSERT INTO `accounts`
 (`id`, `name`, `email`, `password`, `type`) VALUES

@@ -28,6 +28,17 @@ function callback.playerOnLook(player, thing, position, distance)
 				local familiarSummonTime = master:kv():get("familiar-summon-time") or 0
 				description = string.format("%s (Master: %s). \z It will disappear in %s", description, master:getName(), getTimeInWords(familiarSummonTime - os.time()))
 			end
+
+			if EpicMonster.isEpic(thing) then
+				local diffIdx = thing:getStorageValue(EpicMonster.STORAGE_EPIC_DIFF)
+				local diff = EpicMonster.scaling and EpicMonster.scaling[diffIdx]
+				local tier = diff and diff.difficulty or "unknown"
+				description = string.format("%s\nThis creature is an epic monster [%s].", description, tier)
+				local labels = EpicMonster.getAbilityLabels(thing)
+				if #labels > 0 then
+					description = string.format("%s\nAbilities: %s.", description, table.concat(labels, ", "))
+				end
+			end
 		end
 	end
 
