@@ -56,6 +56,14 @@ Monster::Monster(const std::shared_ptr<MonsterType> mType) :
 	}
 }
 
+void Monster::setName(const std::string &newName) {
+	nameOverride = newName;
+	static const std::string_view vowels = "aeiouAEIOU";
+	const std::string article = (!newName.empty() && vowels.find(newName[0]) != std::string_view::npos) ? "an " : "a ";
+	nameDescriptionOverride = article + newName;
+	strDescription = asLowerCaseString(nameDescriptionOverride);
+}
+
 void Monster::addList() {
 	g_game().addMonster(static_self_cast<Monster>());
 }

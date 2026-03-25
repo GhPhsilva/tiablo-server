@@ -46,14 +46,15 @@ public:
 	void addList() override;
 
 	const std::string &getName() const override {
-		return mType->name;
+		return nameOverride.empty() ? mType->name : nameOverride;
 	}
+	void setName(const std::string &newName);
 	// Real monster name, set on monster creation "createMonsterType(typeName)"
 	const std::string &getTypeName() const override {
 		return mType->typeName;
 	}
 	const std::string &getNameDescription() const override {
-		return mType->nameDescription;
+		return nameDescriptionOverride.empty() ? mType->nameDescription : nameDescriptionOverride;
 	}
 	std::string getDescription(int32_t) override {
 		return strDescription + '.';
@@ -365,6 +366,8 @@ private:
 	ForgeClassifications_t monsterForgeClassification = ForgeClassifications_t::FORGE_NORMAL_MONSTER;
 
 	std::string strDescription;
+	std::string nameOverride;
+	std::string nameDescriptionOverride;
 
 	std::shared_ptr<MonsterType> mType;
 	SpawnMonster* spawnMonster = nullptr;

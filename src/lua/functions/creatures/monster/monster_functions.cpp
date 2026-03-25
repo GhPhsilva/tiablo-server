@@ -529,6 +529,22 @@ int MonsterFunctions::luaMonsterGetName(lua_State* L) {
 	return 1;
 }
 
+int MonsterFunctions::luaMonsterSetName(lua_State* L) {
+	// monster:setName(name)
+	const auto monster = getUserdataShared<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+	monster->setName(getString(L, 2));
+	for (const auto &spectator : Spectators().find<Player>(monster->getPosition(), true)) {
+		spectator->getPlayer()->sendCreatureReload(monster);
+	}
+	pushBoolean(L, true);
+	return 1;
+}
+
 int MonsterFunctions::luaMonsterHazard(lua_State* L) {
 	// get: monster:hazard() ; set: monster:hazard(hazard)
 	std::shared_ptr<Monster> monster = getUserdataShared<Monster>(L, 1);

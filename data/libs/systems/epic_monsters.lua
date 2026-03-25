@@ -250,6 +250,12 @@ local function applyEpic(monster, diffIdx)
 	end
 	monster:setStorageValue(STORAGE_EPIC_ABILITIES, abilityMask)
 
+	-- ── Prefix ────────────────────────────────────────────────────────────
+	if #EpicMonster.prefixes > 0 then
+		local prefix = EpicMonster.prefixes[math.random(#EpicMonster.prefixes)]
+		monster:setName(prefix .. " " .. monster:getName())
+	end
+
 	return true
 end
 
