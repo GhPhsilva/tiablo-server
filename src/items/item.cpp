@@ -1546,6 +1546,8 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			descriptions.emplace_back("Body Position", "finger");
 		} else if (it.slotPosition & SLOTP_AMMO) {
 			descriptions.emplace_back("Body Position", "finger");
+		} else if (it.slotPosition & SLOTP_BELT) {
+			descriptions.emplace_back("Body Position", "belt");
 		} else if (it.slotPosition & SLOTP_TWO_HAND) {
 			descriptions.emplace_back("Body Position", "both hands");
 		} else if ((it.slotPosition & SLOTP_LEFT) && it.weaponType != WEAPON_SHIELD) {
@@ -1881,6 +1883,8 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			descriptions.emplace_back("Body Position", "finger");
 		} else if (it.slotPosition & SLOTP_AMMO) {
 			descriptions.emplace_back("Body Position", "finger");
+		} else if (it.slotPosition & SLOTP_BELT) {
+			descriptions.emplace_back("Body Position", "belt");
 		} else if (it.slotPosition & SLOTP_TWO_HAND) {
 			descriptions.emplace_back("Body Position", "both hands");
 		} else if ((it.slotPosition & SLOTP_LEFT) && it.weaponType != WEAPON_SHIELD) {
@@ -2285,6 +2289,7 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 
 				itemDescription << "Cleave " << std::showpos << (itemType.abilities->cleavePercent) << std::noshowpos << "%";
 			}
+
 		}
 
 		if (!begin) {

@@ -4279,3 +4279,4 @@ int PlayerFunctions::luaPlayerRemoveAchievementPoints(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+

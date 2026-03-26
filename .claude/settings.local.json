@@ -17,7 +17,9 @@
       "Bash(grep:*)",
       "Bash(find C:/Users/Pedro/Documents/tiablo/client -path */images/game/slots/* -type f)",
       "Bash(find C:/Users/Pedro/Documents/tiablo/client -name *ammo* -o -name *finger*)",
-      "Bash(find C:/Users/Pedro/Documents/tiablo/client/data/modules -name *.lua -type f -exec grep -l \"InventorySlotAmmo\\\\|position.*10\" {})"
+      "Bash(find C:/Users/Pedro/Documents/tiablo/client/data/modules -name *.lua -type f -exec grep -l \"InventorySlotAmmo\\\\|position.*10\" {})",
+      "Bash(git log:*)",
+      "Bash(find /c/Users/Pedro/Documents/tiablo/client -name *.cpp -o -name *.h)"
     ]
   }
 }

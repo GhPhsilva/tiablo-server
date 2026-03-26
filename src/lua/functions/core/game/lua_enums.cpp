@@ -190,6 +190,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, SLOTP_AMMO);
 	registerEnum(L, SLOTP_DEPOT);
 	registerEnum(L, SLOTP_TWO_HAND);
+	registerEnum(L, SLOTP_BELT);
 
 	// Spells
 	registerEnum(L, SPELL_INSTANT);
@@ -710,6 +711,7 @@ void LuaEnums::initConstSlotEnums(lua_State* L) {
 	registerEnum(L, CONST_SLOT_RING);
 	registerEnum(L, CONST_SLOT_AMMO);
 	registerEnum(L, CONST_SLOT_STORE_INBOX);
+	registerEnum(L, CONST_SLOT_BELT);
 	registerEnum(L, CONST_SLOT_LAST);
 }
 
@@ -823,6 +825,7 @@ void LuaEnums::initItemTypeEnums(lua_State* L) {
 
 	// Quickloot
 	registerEnum(L, ITEM_TYPE_ARMOR);
+	registerEnum(L, ITEM_TYPE_BELT);
 	registerEnum(L, ITEM_TYPE_AMULET);
 	registerEnum(L, ITEM_TYPE_BOOTS);
 	registerEnum(L, ITEM_TYPE_DECORATION);

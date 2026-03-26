@@ -351,7 +351,7 @@ int32_t Player::getWeaponSkill(std::shared_ptr<Item> item) const {
 int32_t Player::getArmor() const {
 	int32_t armor = 0;
 
-	static const Slots_t armorSlots[] = { CONST_SLOT_HEAD, CONST_SLOT_NECKLACE, CONST_SLOT_ARMOR, CONST_SLOT_LEGS, CONST_SLOT_FEET, CONST_SLOT_RING, CONST_SLOT_AMMO };
+	static const Slots_t armorSlots[] = { CONST_SLOT_HEAD, CONST_SLOT_NECKLACE, CONST_SLOT_ARMOR, CONST_SLOT_LEGS, CONST_SLOT_FEET, CONST_SLOT_RING, CONST_SLOT_AMMO, CONST_SLOT_BELT };
 	for (Slots_t slot : armorSlots) {
 		std::shared_ptr<Item> inventoryItem = inventory[slot];
 		if (inventoryItem) {
@@ -3336,6 +3336,13 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 
 		case CONST_SLOT_AMMO: {
 			if (slotPosition & SLOTP_RING) {
+				ret = RETURNVALUE_NOERROR;
+			}
+			break;
+		}
+
+		case CONST_SLOT_BELT: {
+			if (slotPosition & SLOTP_BELT) {
 				ret = RETURNVALUE_NOERROR;
 			}
 			break;

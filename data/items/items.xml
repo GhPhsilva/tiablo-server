@@ -710,11 +710,13 @@
 		<attribute key="primarytype" value="documents and papers"/>
 		<attribute key="weight" value="120"/>
 	</item>
-	<item id="349" article="a" name="suspicious signet ring">
-		<attribute key="primarytype" value="rings"/>
-		<attribute key="weight" value="80"/>
+	<item id="349" article="a" name="test belt">
+		<attribute key="type" value="belt"/>
+		<attribute key="slottype" value="belt"/>
+		<attribute key="armor" value="10"/>
+		<attribute key="weight" value="500"/>
 		<attribute key="script" value="moveevent">
-			<attribute key="slot" value="ring"/>
+			<attribute key="slot" value="belt"/>
 		</attribute>
 	</item>
 	<item id="350" article="a" name="case of rust bugs">

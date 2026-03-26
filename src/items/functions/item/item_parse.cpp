@@ -73,7 +73,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseMagicShieldCapacity(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parsePerfecShot(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseCleavePercent(tmpStrValue, valueAttribute, itemType);
-	ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
+ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseTransformOnUse(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parsePrimaryType(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseHouseRelated(tmpStrValue, valueAttribute, itemType);
@@ -316,6 +316,8 @@ void ItemParse::parseSlotType(const std::string &tmpStrValue, pugi::xml_attribut
 			itemType.slotPosition |= SLOTP_RING;
 		} else if (stringValue == "ammo") {
 			itemType.slotPosition |= SLOTP_AMMO;
+		} else if (stringValue == "belt") {
+			itemType.slotPosition |= SLOTP_BELT;
 		} else if (stringValue == "hand") {
 			itemType.slotPosition |= SLOTP_HAND;
 		} else {
@@ -1049,6 +1051,8 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 					moveevent->setSlot(SLOTP_RING);
 				} else if (slotName == "ammo") {
 					moveevent->setSlot(SLOTP_AMMO);
+				} else if (slotName == "belt") {
+					moveevent->setSlot(SLOTP_BELT);
 				} else {
 					g_logger().warn("[{}] unknown slot type '{}'", __FUNCTION__, slotName);
 				}
