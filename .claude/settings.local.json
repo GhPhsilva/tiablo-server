@@ -13,7 +13,11 @@
       "Bash(2)",
       "Bash(find /c/Users/Pedro/Documents/tiablo/server -type f -name *epic* -o -name *boss* -o -name *prefix*)",
       "Bash(ls:*)",
-      "Bash(grep -rn \"\\\\/em\\\\|talkaction.*em\\\\|spawnMonster\\\\|makeEpic\" C:/Users/Pedro/Documents/tiablo/server/data --include=*.lua -l)"
+      "Bash(grep -rn \"\\\\/em\\\\|talkaction.*em\\\\|spawnMonster\\\\|makeEpic\" C:/Users/Pedro/Documents/tiablo/server/data --include=*.lua -l)",
+      "Bash(grep:*)",
+      "Bash(find C:/Users/Pedro/Documents/tiablo/client -path */images/game/slots/* -type f)",
+      "Bash(find C:/Users/Pedro/Documents/tiablo/client -name *ammo* -o -name *finger*)",
+      "Bash(find C:/Users/Pedro/Documents/tiablo/client/data/modules -name *.lua -type f -exec grep -l \"InventorySlotAmmo\\\\|position.*10\" {})"
     ]
   }
 }

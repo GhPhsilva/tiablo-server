@@ -3335,12 +3335,8 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 		}
 
 		case CONST_SLOT_AMMO: {
-			if (allowPutItemsOnAmmoSlot) {
+			if (slotPosition & SLOTP_RING) {
 				ret = RETURNVALUE_NOERROR;
-			} else {
-				if ((slotPosition & SLOTP_AMMO)) {
-					ret = RETURNVALUE_NOERROR;
-				}
 			}
 			break;
 		}
