@@ -20,7 +20,11 @@
       "Bash(find C:/Users/Pedro/Documents/tiablo/client/data/modules -name *.lua -type f -exec grep -l \"InventorySlotAmmo\\\\|position.*10\" {})",
       "Bash(git log:*)",
       "Bash(find /c/Users/Pedro/Documents/tiablo/client -name *.cpp -o -name *.h)",
-      "Bash(find /c/Users/Pedro/Documents/tiablo/server -name *.lua -type f -exec grep -l \"monsterOnDropLoot\\\\|dropLoot\" {})"
+      "Bash(find /c/Users/Pedro/Documents/tiablo/server -name *.lua -type f -exec grep -l \"monsterOnDropLoot\\\\|dropLoot\" {})",
+      "Bash(find \"C:\\\\Users\\\\Pedro\\\\Documents\\\\tiablo\\\\server\\\\data\\\\scripts\" -name \"*.lua\" -exec grep -l \"items\\\\.xml\\\\|Item\\\\.items\" {})",
+      "Bash(find /c/Users/Pedro/Documents/tiablo/server -name *.xml -path *monster* -type f)",
+      "Bash(find /c/Users/Pedro/Documents/tiablo/server/data-otservbr-global -name *.xml -type f)",
+      "Bash(find \"C:\\\\Users\\\\Pedro\\\\Documents\\\\tiablo\\\\server\\\\data\" -type f -name \"*.lua\" -exec grep -l \"items\\\\|Item\" {})"
     ]
   }
 }
