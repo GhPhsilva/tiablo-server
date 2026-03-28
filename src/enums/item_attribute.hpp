@@ -46,6 +46,17 @@ enum ItemAttribute_t : uint64_t {
 	LOOTMESSAGE_SUFFIX = 33,
 	STORE_INBOX_CATEGORY = 34,
 	OBTAINCONTAINER = 35,
+
+	// Epic Items System
+	EPIC_ITEM_ID          = 36, // uint32_t — references epic_items.id
+	EPIC_ITEM_RARITY      = 37, // uint8_t  — references epic_items_rarity.id (0 until identified)
+	EPIC_ITEM_IDENTIFIED  = 38, // bool     — false = unidentified
+	EPIC_MODIFIER_1_ID    = 39, // uint16_t — attack modifier id
+	EPIC_MODIFIER_1_VALUE = 40, // int32_t  — rolled value
+	EPIC_MODIFIER_2_ID    = 41, // uint16_t — defense modifier id
+	EPIC_MODIFIER_2_VALUE = 42, // int32_t
+	EPIC_MODIFIER_3_ID    = 43, // uint16_t — support modifier id
+	EPIC_MODIFIER_3_VALUE = 44, // int32_t
 };
 
 enum ItemDecayState_t : uint8_t {

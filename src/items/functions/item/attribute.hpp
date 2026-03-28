@@ -42,6 +42,15 @@ public:
 			case ItemAttribute_t::DURATION_TIMESTAMP:
 			case ItemAttribute_t::TIER:
 			case ItemAttribute_t::AMOUNT:
+			case ItemAttribute_t::EPIC_ITEM_ID:
+			case ItemAttribute_t::EPIC_ITEM_RARITY:
+			case ItemAttribute_t::EPIC_ITEM_IDENTIFIED:
+			case ItemAttribute_t::EPIC_MODIFIER_1_ID:
+			case ItemAttribute_t::EPIC_MODIFIER_1_VALUE:
+			case ItemAttribute_t::EPIC_MODIFIER_2_ID:
+			case ItemAttribute_t::EPIC_MODIFIER_2_VALUE:
+			case ItemAttribute_t::EPIC_MODIFIER_3_ID:
+			case ItemAttribute_t::EPIC_MODIFIER_3_VALUE:
 				return true;
 			default:
 				return false;

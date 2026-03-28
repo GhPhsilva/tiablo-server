@@ -14,6 +14,81 @@
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/movement.hpp"
+#include "database/database.hpp"
+
+// Epic Items modifier application helper
+// Reads the modifier IDs/values stored in the item instance attributes and
+// applies (equip=true) or removes (equip=false) their effects from the player.
+namespace {
+
+// Lazy-loaded map: modifier ID -> effect string (loaded from epic_items_modifiers table)
+static std::unordered_map<uint16_t, std::string> g_epicModifierEffects;
+static bool g_epicModifierEffectsLoaded = false;
+
+static void ensureEpicModifiersLoaded() {
+	if (g_epicModifierEffectsLoaded) {
+		return;
+	}
+	g_epicModifierEffectsLoaded = true;
+	auto result = Database::getInstance().storeQuery(
+		"SELECT `id`, `effect` FROM `epic_items_modifiers`");
+	if (!result) {
+		return;
+	}
+	do {
+		uint16_t id = result->getNumber<uint16_t>("id");
+		std::string effect = result->getString("effect");
+		g_epicModifierEffects[id] = std::move(effect);
+	} while (result->next());
+}
+
+static void applyEpicModifiers(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, bool equip) {
+	if (!player || !item) {
+		return;
+	}
+	ensureEpicModifiersLoaded();
+
+	const int sign = equip ? 1 : -1;
+
+	// Iterate through the 3 modifier slots (attack=slot1, defense=slot2, support=slot3)
+	static const std::pair<ItemAttribute_t, ItemAttribute_t> slots[3] = {
+		{ ItemAttribute_t::EPIC_MODIFIER_1_ID, ItemAttribute_t::EPIC_MODIFIER_1_VALUE },
+		{ ItemAttribute_t::EPIC_MODIFIER_2_ID, ItemAttribute_t::EPIC_MODIFIER_2_VALUE },
+		{ ItemAttribute_t::EPIC_MODIFIER_3_ID, ItemAttribute_t::EPIC_MODIFIER_3_VALUE },
+	};
+
+	for (const auto &[idAttr, valAttr] : slots) {
+		if (!item->hasAttribute(idAttr)) {
+			continue;
+		}
+		uint16_t modId = item->getAttribute<uint16_t>(idAttr);
+		int32_t modVal = item->getAttribute<int32_t>(valAttr);
+		if (modId == 0) {
+			continue;
+		}
+
+		auto it = g_epicModifierEffects.find(modId);
+		if (it == g_epicModifierEffects.end()) {
+			continue;
+		}
+		const std::string &effect = it->second;
+
+		if (effect == "ADD_MAX_LIFE") {
+			player->setVarStats(STAT_MAXHITPOINTS, sign * modVal);
+		} else if (effect == "ADD_MAX_MANA") {
+			player->setVarStats(STAT_MAXMANAPOINTS, sign * modVal);
+		} else if (effect == "ADD_MOVEMENT_SPEED") {
+			g_game().changePlayerSpeed(player, sign * modVal);
+		} else if (effect == "ADD_DROP_CHANCE") {
+			player->addDropChanceBonus(sign * (static_cast<float>(modVal) / 100.f));
+		}
+		// TODO: ADD_*_DAMAGE, ADD_*_RESISTENCE, ADD_PHYSICAL_DEFENSE,
+		//       ADD_LIFE_STEAL, ADD_MANA_STEAL, ADD_ATTACK_SPEED
+		//       require combat-system integration (Phase 6 future work)
+	}
+}
+
+} // namespace
 
 void MoveEvents::clear(bool isFromXML /*= false*/) {
 	if (isFromXML) {
@@ -523,6 +598,15 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 		}
 	}
 
+	// Block equip of unidentified epic items
+	if (item->hasAttribute(ItemAttribute_t::EPIC_ITEM_IDENTIFIED) &&
+	    !item->getAttribute<bool>(ItemAttribute_t::EPIC_ITEM_IDENTIFIED)) {
+		if (player) {
+			player->sendTextMessage(MESSAGE_FAILURE, "You must identify this item before equipping it.");
+		}
+		return 0;
+	}
+
 	if (isCheck) {
 		return 1;
 	}
@@ -606,6 +690,12 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 		}
 	}
 
+	// Epic item modifiers (identified items only)
+	if (item->hasAttribute(ItemAttribute_t::EPIC_ITEM_IDENTIFIED) &&
+	    item->getAttribute<bool>(ItemAttribute_t::EPIC_ITEM_IDENTIFIED)) {
+		applyEpicModifiers(player, item, true);
+	}
+
 	// Updates the main backpack as unasigned if there is no item equipped
 	if (slot == CONST_SLOT_BACKPACK) {
 		g_logger().debug("[{}] does not have backpack, trying to add new container as unasigned", __FUNCTION__);
@@ -687,6 +777,12 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, std:
 
 	if (it.transformDeEquipTo != 0) {
 		g_game().transformItem(item, it.transformDeEquipTo);
+	}
+
+	// Epic item modifiers (identified items only)
+	if (item->hasAttribute(ItemAttribute_t::EPIC_ITEM_IDENTIFIED) &&
+	    item->getAttribute<bool>(ItemAttribute_t::EPIC_ITEM_IDENTIFIED)) {
+		applyEpicModifiers(player, item, false);
 	}
 
 	player->sendStats();

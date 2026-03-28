@@ -2320,6 +2320,14 @@ public:
 		return loyaltyBonusPercent;
 	}
 
+	// Epic Items System — drop chance bonus (increased by ADD_DROP_CHANCE modifier)
+	float getDropChanceBonus() const {
+		return dropChanceBonus;
+	}
+	void addDropChanceBonus(float delta) {
+		dropChanceBonus = std::max(0.0f, dropChanceBonus + delta);
+	}
+
 	// Depot search system
 	void requestDepotItems();
 	void requestDepotSearchItem(uint16_t itemId, uint8_t tier);
@@ -2857,6 +2865,7 @@ private:
 	uint8_t soul = 0;
 	uint8_t levelPercent = 0;
 	uint16_t loyaltyBonusPercent = 0;
+	float dropChanceBonus = 0.0f; // Epic Items: bonus chance to identify as rare
 	double_t magLevelPercent = 0;
 
 	PlayerSex_t sex = PLAYERSEX_FEMALE;

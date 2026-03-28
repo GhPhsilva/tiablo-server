@@ -402,6 +402,22 @@ int MonsterTypeFunctions::luaMonsterTypeExperience(lua_State* L) {
 	return 1;
 }
 
+int MonsterTypeFunctions::luaMonsterTypeLevel(lua_State* L) {
+	// get: monsterType:level() set: monsterType:level(level)
+	const auto monsterType = getUserdataShared<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			lua_pushnumber(L, monsterType->info.level);
+		} else {
+			monsterType->info.level = getNumber<uint16_t>(L, 2);
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int MonsterTypeFunctions::luaMonsterTypeFaction(lua_State* L) {
 	// get: monsterType:faction() set: monsterType:faction(faction)
 	const auto monsterType = getUserdataShared<MonsterType>(L, 1);

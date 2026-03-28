@@ -47,6 +47,7 @@ public:
 		registerMethod(L, "MonsterType", "maxHealth", MonsterTypeFunctions::luaMonsterTypeMaxHealth);
 		registerMethod(L, "MonsterType", "runHealth", MonsterTypeFunctions::luaMonsterTypeRunHealth);
 		registerMethod(L, "MonsterType", "experience", MonsterTypeFunctions::luaMonsterTypeExperience);
+		registerMethod(L, "MonsterType", "level", MonsterTypeFunctions::luaMonsterTypeLevel);
 
 		registerMethod(L, "MonsterType", "faction", MonsterTypeFunctions::luaMonsterTypeFaction);
 		registerMethod(L, "MonsterType", "enemyFactions", MonsterTypeFunctions::luaMonsterTypeEnemyFactions);
@@ -175,6 +176,7 @@ private:
 	static int luaMonsterTypeMaxHealth(lua_State* L);
 	static int luaMonsterTypeRunHealth(lua_State* L);
 	static int luaMonsterTypeExperience(lua_State* L);
+	static int luaMonsterTypeLevel(lua_State* L);
 
 	static int luaMonsterTypeFaction(lua_State* L);
 	static int luaMonsterTypeEnemyFactions(lua_State* L);

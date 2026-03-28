@@ -181,6 +181,7 @@ bool IOLoginDataLoad::loadPlayerFirst(std::shared_ptr<Player> player, DBResult_p
 
 	player->setManaShield(result->getNumber<uint16_t>("manashield"));
 	player->setMaxManaShield(result->getNumber<uint16_t>("max_manashield"));
+	player->dropChanceBonus = static_cast<float>(std::stod(result->getString("drop_chance_bonus")));
 	return true;
 }
 

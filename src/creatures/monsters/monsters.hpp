@@ -82,6 +82,7 @@ class MonsterType {
 		uint16_t baseSpeed = 110;
 
 		uint64_t experience = 0;
+		uint16_t level = 1; // Monster level used by the Epic Items drop system
 
 		uint32_t manaCost = 0;
 		uint32_t yellChance = 0;

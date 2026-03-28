@@ -345,6 +345,7 @@ bool ConfigManager::load() {
 
 	loadStringConfig(L, CORE_DIRECTORY, "coreDirectory", "data");
 	loadStringConfig(L, DATA_DIRECTORY, "dataPackDirectory", "data-otservbr-global");
+	loadStringConfig(L, EPIC_ITEM_MODE, "epicItemMode", "normal");
 	loadStringConfig(L, DEFAULT_PRIORITY, "defaultPriority", "high");
 	loadStringConfig(L, DISCORD_WEBHOOK_URL, "discordWebhookURL", "");
 	loadStringConfig(L, FORGE_FIENDISH_INTERVAL_TIME, "forgeFiendishIntervalTime", "1");
