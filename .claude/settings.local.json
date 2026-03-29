@@ -28,7 +28,13 @@
       "Bash(\"C:/Users/Pedro/Documents/tiablo/server/config.lua\")",
       "Bash(printf '\\\\n-- Epic Items System\\\\n-- Options: \"\"normal\"\" \\(standard drops only\\), \"\"mixed\"\" \\(standard + epic drops\\), \"\"epic\"\" \\(epic drops only\\)\\\\nepicItemMode = \"\"normal\"\"\\\\n')",
       "Bash(find /c/Users/Pedro/Documents/tiablo/server -type f -name *migration*45*)",
-      "Bash(find C:UsersPedroDocumentstiabloserver/src -name *parse* -type f)"
+      "Bash(find C:UsersPedroDocumentstiabloserver/src -name *parse* -type f)",
+      "Bash(powershell -Command \"\n\\\\$dat = [System.IO.File]::ReadAllBytes\\('C:/Users/Pedro/Documents/tiablo/client/data/things/1100/Tibia.dat'\\)\n\\\\$spr = [System.IO.File]::ReadAllBytes\\('C:/Users/Pedro/Documents/tiablo/client/data/things/1100/Tibia.spr'\\)\n\\\\$datSig = [BitConverter]::ToUInt32\\(\\\\$dat, 0\\)\n\\\\$sprSig = [BitConverter]::ToUInt32\\(\\\\$spr, 0\\)\nWrite-Host \\('DAT signature: 0x' + \\\\$datSig.ToString\\('X'\\)\\)\nWrite-Host \\('SPR signature: 0x' + \\\\$sprSig.ToString\\('X'\\)\\)\n\")",
+      "Bash(find C:/Users/Pedro/Documents/tiablo/canary-map-editor-v4.0-windows -name *.xml -o -name *.ini -o -name *.cfg)",
+      "Bash(find C:/Users/Pedro/Documents/tiablo/canary-map-editor-v4.0-windows -name *.conf -o -name settings* -o -name *.json)",
+      "Bash(reg query:*)",
+      "Bash(find C:/Users/Pedro/Documents/tiablo/canary-map-editor-v4.0-windows/ -name *.xml -o -name *.conf -o -name *.ini -o -name *.cfg)",
+      "Bash(sort -t: -k2 -n)"
     ]
   }
 }
