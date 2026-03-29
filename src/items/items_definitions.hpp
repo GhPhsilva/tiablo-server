@@ -609,6 +609,7 @@ enum ItemParseAttributes_t {
 	ITEM_PARSE_PRIMARYTYPE,
 	ITEM_PARSE_USEDBYGUESTS,
 	ITEM_PARSE_SCRIPT,
+	ITEM_PARSE_EPIC,
 };
 
 struct ImbuementInfo {

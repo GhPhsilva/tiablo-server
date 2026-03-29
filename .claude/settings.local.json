@@ -26,7 +26,9 @@
       "Bash(find /c/Users/Pedro/Documents/tiablo/server/data-otservbr-global -name *.xml -type f)",
       "Bash(find \"C:\\\\Users\\\\Pedro\\\\Documents\\\\tiablo\\\\server\\\\data\" -type f -name \"*.lua\" -exec grep -l \"items\\\\|Item\" {})",
       "Bash(\"C:/Users/Pedro/Documents/tiablo/server/config.lua\")",
-      "Bash(printf '\\\\n-- Epic Items System\\\\n-- Options: \"\"normal\"\" \\(standard drops only\\), \"\"mixed\"\" \\(standard + epic drops\\), \"\"epic\"\" \\(epic drops only\\)\\\\nepicItemMode = \"\"normal\"\"\\\\n')"
+      "Bash(printf '\\\\n-- Epic Items System\\\\n-- Options: \"\"normal\"\" \\(standard drops only\\), \"\"mixed\"\" \\(standard + epic drops\\), \"\"epic\"\" \\(epic drops only\\)\\\\nepicItemMode = \"\"normal\"\"\\\\n')",
+      "Bash(find /c/Users/Pedro/Documents/tiablo/server -type f -name *migration*45*)",
+      "Bash(find C:UsersPedroDocumentstiabloserver/src -name *parse* -type f)"
     ]
   }
 }

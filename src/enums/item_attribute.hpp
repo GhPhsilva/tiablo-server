@@ -48,7 +48,7 @@ enum ItemAttribute_t : uint64_t {
 	OBTAINCONTAINER = 35,
 
 	// Epic Items System
-	EPIC_ITEM_ID          = 36, // uint32_t — references epic_items.id
+	EPIC_ITEM_ID          = 36, // DEPRECATED — no longer written; kept to avoid serialization breakage
 	EPIC_ITEM_RARITY      = 37, // uint8_t  — references epic_items_rarity.id (0 until identified)
 	EPIC_ITEM_IDENTIFIED  = 38, // bool     — false = unidentified
 	EPIC_MODIFIER_1_ID    = 39, // uint16_t — attack modifier id

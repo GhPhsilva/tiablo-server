@@ -79,6 +79,11 @@ public:
 
 		registerMethod(L, "ItemType", "hasSubType", ItemTypeFunctions::luaItemTypeHasSubType);
 
+		registerMethod(L, "ItemType", "isEpic", ItemTypeFunctions::luaItemTypeIsEpic);
+		registerMethod(L, "ItemType", "getEpicRarity", ItemTypeFunctions::luaItemTypeGetEpicRarity);
+		registerMethod(L, "ItemType", "getEpicName", ItemTypeFunctions::luaItemTypeGetEpicName);
+		registerMethod(L, "ItemType", "getPrimaryType", ItemTypeFunctions::luaItemTypeGetPrimaryType);
+
 		ItemClassificationFunctions::init(L);
 	}
 
@@ -144,4 +149,9 @@ private:
 	static int luaItemTypeGetVocationString(lua_State* L);
 
 	static int luaItemTypeHasSubType(lua_State* L);
+
+	static int luaItemTypeIsEpic(lua_State* L);
+	static int luaItemTypeGetEpicRarity(lua_State* L);
+	static int luaItemTypeGetEpicName(lua_State* L);
+	static int luaItemTypeGetPrimaryType(lua_State* L);
 };

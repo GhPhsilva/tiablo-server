@@ -370,6 +370,11 @@ public:
 	bool spellbook = false;
 	bool isWrapKit = false;
 	bool m_canBeUsedByGuests = false;
+
+	// Epic Items System
+	bool epicItem = false;
+	std::string epicRarity; // "magic" | "rare" | ""
+	std::string epicName;   // base name for modifier-enhanced naming (e.g., "mace")
 };
 
 class Items {

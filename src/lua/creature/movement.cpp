@@ -599,11 +599,9 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 	}
 
 	// Block equip of unidentified epic items
-	if (item->hasAttribute(ItemAttribute_t::EPIC_ITEM_IDENTIFIED) &&
-	    !item->getAttribute<bool>(ItemAttribute_t::EPIC_ITEM_IDENTIFIED)) {
-		if (player) {
-			player->sendTextMessage(MESSAGE_FAILURE, "You must identify this item before equipping it.");
-		}
+	if (Item::items[item->getID()].epicItem &&
+	    item->getAttribute<int32_t>(ItemAttribute_t::EPIC_ITEM_IDENTIFIED) != 1) {
+		player->sendTextMessage(MESSAGE_FAILURE, "You must identify this item before equipping it.");
 		return 0;
 	}
 

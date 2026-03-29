@@ -78,6 +78,7 @@ ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parsePrimaryType(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseHouseRelated(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseUnscriptedItems(tmpStrValue, attributeNode, valueAttribute, itemType);
+	ItemParse::parseEpic(tmpStrValue, attributeNode, itemType);
 }
 
 void ItemParse::parseDummyRate(pugi::xml_node attributeNode, ItemType &itemType) {
@@ -1268,6 +1269,26 @@ void ItemParse::parseUnscriptedItems(const std::string_view &tmpStrValue, pugi::
 
 				createAndRegisterScript(itemType, attributeNode, MOVE_EVENT_NONE, weaponType);
 			}
+		}
+	}
+}
+
+void ItemParse::parseEpic(const std::string &tmpStrValue, pugi::xml_node attributeNode, ItemType &itemType) {
+	if (tmpStrValue != "epic") {
+		return;
+	}
+	itemType.epicItem = true;
+	for (auto subNode : attributeNode.children()) {
+		pugi::xml_attribute subKey = subNode.attribute("key");
+		pugi::xml_attribute subValue = subNode.attribute("value");
+		if (!subKey || !subValue) {
+			continue;
+		}
+		const std::string keyStr = asLowerCaseString(subKey.as_string());
+		if (keyStr == "rarity") {
+			itemType.epicRarity = asLowerCaseString(subValue.as_string());
+		} else if (keyStr == "epicname") {
+			itemType.epicName = subValue.as_string();
 		}
 	}
 }

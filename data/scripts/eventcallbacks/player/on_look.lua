@@ -15,6 +15,10 @@ function callback.playerOnLook(player, thing, position, distance)
 			end
 		else
 			description = description .. thing:getDescription(distance)
+			local thingType = thing:getType()
+			if thingType:isEpic() and thing:getAttribute(ITEM_ATTRIBUTE_EPIC_ITEM_IDENTIFIED) ~= 1 then
+				description = description .. "\nThis item is unidentified. Use an identify rune to reveal its true power."
+			end
 		end
 		local ownerName = thing:getOwnerName()
 		if ownerName then

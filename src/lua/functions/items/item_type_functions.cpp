@@ -624,3 +624,47 @@ int ItemTypeFunctions::luaItemTypeGetVocationString(lua_State* L) {
 	}
 	return 1;
 }
+
+int ItemTypeFunctions::luaItemTypeIsEpic(lua_State* L) {
+	// itemType:isEpic()
+	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	if (itemType) {
+		pushBoolean(L, itemType->epicItem);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int ItemTypeFunctions::luaItemTypeGetEpicRarity(lua_State* L) {
+	// itemType:getEpicRarity()
+	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	if (itemType) {
+		pushString(L, itemType->epicRarity);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int ItemTypeFunctions::luaItemTypeGetEpicName(lua_State* L) {
+	// itemType:getEpicName()
+	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	if (itemType) {
+		pushString(L, itemType->epicName);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int ItemTypeFunctions::luaItemTypeGetPrimaryType(lua_State* L) {
+	// itemType:getPrimaryType()
+	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	if (itemType) {
+		pushString(L, itemType->m_primaryType);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
