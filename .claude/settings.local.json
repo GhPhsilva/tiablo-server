@@ -39,7 +39,22 @@
       "Bash(cmd /c \"dir /b \\\\\"C:\\\\Users\\\\Pedro\\\\Documents\\\\tiablo\\\\canary-map-editor-v4.0-windows\\\\source\\\\\" 2>&1 | findstr /i waypoint\")",
       "Bash(cmd /c \"dir /s /b \\\\\"C:\\\\Users\\\\Pedro\\\\Documents\\\\tiablo\\\\canary-map-editor-v4.0-windows\\\\source\\\\*.h\\\\\" 2>&1 | findstr /i waypoint\")",
       "Bash(cmd /c \"findstr /s /i /l \\\\\"waypoint\\\\\" \\\\\"C:\\\\Users\\\\Pedro\\\\Documents\\\\tiablo\\\\canary-map-editor-v4.0-windows\\\\source\\\\*.h\\\\\" 2>&1 | head\")",
-      "Bash(cmd /c \"dir \\\\\"C:\\\\Users\\\\Pedro\\\\Documents\\\\tiablo\\\\canary-map-editor-v4.0-windows\\\\\" /b\")"
+      "Bash(cmd /c \"dir \\\\\"C:\\\\Users\\\\Pedro\\\\Documents\\\\tiablo\\\\canary-map-editor-v4.0-windows\\\\\" /b\")",
+      "Bash(find C:UsersPedroDocumentstiabloserver -name *.otb)",
+      "Bash(find C:/Users/Pedro/Documents/tiablo -name *.otb)",
+      "Bash(dotnet --list-runtimes)",
+      "Read(//c/Program Files/dotnet/shared/Microsoft.WindowsDesktop.App//**)",
+      "Read(//c/Program Files/dotnet/shared/Microsoft.NETCore.App//**)",
+      "Bash(head -10 find C:/Users/Pedro/Documents/tiablo/programas/AssetsEditor -name *.log -o -name *.txt)",
+      "Bash(pip install:*)",
+      "Bash(python -m grpc_tools.protoc -I src/protobuf --python_out=/tmp src/protobuf/appearances.proto)",
+      "Bash(python add_appearance.py data/items/appearances.dat 44779 44780)",
+      "Bash(ls /tmp/appearances*)",
+      "Bash(ls /tmp/*.py)",
+      "Bash(python -c \":*)",
+      "Bash(find C:/Users/Pedro/Documents/tiablo/client -name catalog* -o -name *.json)",
+      "Bash(find C:/Users/Pedro/Documents/tiablo/client -name *.png)",
+      "Bash(git show:*)"
     ]
   }
 }

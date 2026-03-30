@@ -144,9 +144,10 @@ function EpicItems.identify(item, player)
 		rolledMods[#rolledMods + 1] = { mod = mod, value = value }
 	end
 
-	-- Derive identified name: strip "unidentified " prefix from item name
+	-- Derive identified name: strip "unidentified " prefix then prepend rarity code
 	local currentName = item:getName()
-	local newName = currentName:gsub("^unidentified ", "")
+	local baseName = currentName:gsub("^unidentified ", "")
+	local newName = rarityCode .. " " .. baseName
 
 	-- Apply scaled stats
 	local scaledAttack  = math.floor(baseAttack  * mult)

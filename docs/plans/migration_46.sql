@@ -43,53 +43,54 @@ ALTER TABLE `epic_items_modifiers`
 -- ─────────────────────────────────────────────────────────────────────────────
 
 -- Attack modifiers — weapons only
+-- Note: applied_to_type must match the primarytype values used in items.xml exactly.
 UPDATE `epic_items_modifiers` SET
     `label` = 'Shivering', `description` = 'Adds %d%% cold damage to attacks',
     `min_magic_value` = 1, `max_magic_value` = 5,
     `min_rare_value`  = 5, `max_rare_value`  = 10,
-    `applied_to_type` = 'sword,axe,club,distance,wand,ammunition'
+    `applied_to_type` = 'sword weapons,axe weapons,club weapons,distance weapons,wands,ammunition'
 WHERE `effect` = 'ADD_COLD_DAMAGE';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Flaming', `description` = 'Adds %d%% fire damage to attacks',
     `min_magic_value` = 1, `max_magic_value` = 5,
     `min_rare_value`  = 5, `max_rare_value`  = 10,
-    `applied_to_type` = 'sword,axe,club,distance,wand,ammunition'
+    `applied_to_type` = 'sword weapons,axe weapons,club weapons,distance weapons,wands,ammunition'
 WHERE `effect` = 'ADD_FIRE_DAMAGE';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Shocking', `description` = 'Adds %d%% lightning damage to attacks',
     `min_magic_value` = 1, `max_magic_value` = 5,
     `min_rare_value`  = 5, `max_rare_value`  = 10,
-    `applied_to_type` = 'sword,axe,club,distance,wand,ammunition'
+    `applied_to_type` = 'sword weapons,axe weapons,club weapons,distance weapons,wands,ammunition'
 WHERE `effect` = 'ADD_LIGHTNING_DAMAGE';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Toxic', `description` = 'Adds %d%% poison damage to attacks',
     `min_magic_value` = 1, `max_magic_value` = 5,
     `min_rare_value`  = 5, `max_rare_value`  = 10,
-    `applied_to_type` = 'sword,axe,club,distance,wand,ammunition'
+    `applied_to_type` = 'sword weapons,axe weapons,club weapons,distance weapons,wands,ammunition'
 WHERE `effect` = 'ADD_POISON_DAMAGE';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Holy', `description` = 'Adds %d%% holy damage to attacks',
     `min_magic_value` = 1, `max_magic_value` = 5,
     `min_rare_value`  = 5, `max_rare_value`  = 10,
-    `applied_to_type` = 'sword,axe,club,distance,wand,ammunition'
+    `applied_to_type` = 'sword weapons,axe weapons,club weapons,distance weapons,wands,ammunition'
 WHERE `effect` = 'ADD_HOLY_DAMAGE';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Cursed', `description` = 'Adds %d%% death damage to attacks',
     `min_magic_value` = 1, `max_magic_value` = 5,
     `min_rare_value`  = 5, `max_rare_value`  = 10,
-    `applied_to_type` = 'sword,axe,club,distance,wand,ammunition'
+    `applied_to_type` = 'sword weapons,axe weapons,club weapons,distance weapons,wands,ammunition'
 WHERE `effect` = 'ADD_DARKNESS_DAMAGE';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Savage', `description` = 'Adds %d%% physical damage to attacks',
     `min_magic_value` = 1, `max_magic_value` = 5,
     `min_rare_value`  = 5, `max_rare_value`  = 10,
-    `applied_to_type` = 'sword,axe,club,distance,wand,ammunition'
+    `applied_to_type` = 'sword weapons,axe weapons,club weapons,distance weapons,wands,ammunition'
 WHERE `effect` = 'ADD_PHYSICAL_DAMAGE';
 
 -- Defense modifiers — armor pieces only
@@ -97,49 +98,49 @@ UPDATE `epic_items_modifiers` SET
     `label` = 'Diamond', `description` = 'Adds %d physical defense',
     `min_magic_value` = 1, `max_magic_value` = 5,
     `min_rare_value`  = 5, `max_rare_value`  = 15,
-    `applied_to_type` = 'armors,helmets,legs,boots,gloves,shields,amulets and necklaces,rings,belts,quivers,spellbook'
+    `applied_to_type` = 'armors,helmets,legs,boots,shields,amulets and necklaces,rings,quivers,spellbooks'
 WHERE `effect` = 'ADD_PHYSICAL_DEFENSE';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Ruby', `description` = 'Adds %d%% fire resistance',
     `min_magic_value` = 1, `max_magic_value` = 5,
     `min_rare_value`  = 5, `max_rare_value`  = 10,
-    `applied_to_type` = 'armors,helmets,legs,boots,gloves,shields,amulets and necklaces,rings,belts,quivers,spellbook'
+    `applied_to_type` = 'armors,helmets,legs,boots,shields,amulets and necklaces,rings,quivers,spellbooks'
 WHERE `effect` = 'ADD_FIRE_RESISTENCE';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Sapphire', `description` = 'Adds %d%% cold resistance',
     `min_magic_value` = 1, `max_magic_value` = 5,
     `min_rare_value`  = 5, `max_rare_value`  = 10,
-    `applied_to_type` = 'armors,helmets,legs,boots,gloves,shields,amulets and necklaces,rings,belts,quivers,spellbook'
+    `applied_to_type` = 'armors,helmets,legs,boots,shields,amulets and necklaces,rings,quivers,spellbooks'
 WHERE `effect` = 'ADD_COLD_RESISTENCE';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Amber', `description` = 'Adds %d%% lightning resistance',
     `min_magic_value` = 1, `max_magic_value` = 5,
     `min_rare_value`  = 5, `max_rare_value`  = 10,
-    `applied_to_type` = 'armors,helmets,legs,boots,gloves,shields,amulets and necklaces,rings,belts,quivers,spellbook'
+    `applied_to_type` = 'armors,helmets,legs,boots,shields,amulets and necklaces,rings,quivers,spellbooks'
 WHERE `effect` = 'ADD_LIGHTNING_RESISTENCE';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Jade', `description` = 'Adds %d%% poison resistance',
     `min_magic_value` = 1, `max_magic_value` = 5,
     `min_rare_value`  = 5, `max_rare_value`  = 10,
-    `applied_to_type` = 'armors,helmets,legs,boots,gloves,shields,amulets and necklaces,rings,belts,quivers,spellbook'
+    `applied_to_type` = 'armors,helmets,legs,boots,shields,amulets and necklaces,rings,quivers,spellbooks'
 WHERE `effect` = 'ADD_POISON_RESISTENCE';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Topaz', `description` = 'Adds %d%% holy resistance',
     `min_magic_value` = 1, `max_magic_value` = 5,
     `min_rare_value`  = 5, `max_rare_value`  = 10,
-    `applied_to_type` = 'armors,helmets,legs,boots,gloves,shields,amulets and necklaces,rings,belts,quivers,spellbook'
+    `applied_to_type` = 'armors,helmets,legs,boots,shields,amulets and necklaces,rings,quivers,spellbooks'
 WHERE `effect` = 'ADD_HOLY_RESISTENCE';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Sacred', `description` = 'Adds %d%% death resistance',
     `min_magic_value` = 1, `max_magic_value` = 5,
     `min_rare_value`  = 5, `max_rare_value`  = 10,
-    `applied_to_type` = 'armors,helmets,legs,boots,gloves,shields,amulets and necklaces,rings,belts,quivers,spellbook'
+    `applied_to_type` = 'armors,helmets,legs,boots,shields,amulets and necklaces,rings,quivers,spellbooks'
 WHERE `effect` = 'ADD_DARKNESS_RESISTENCE';
 
 -- Support modifiers — all item types
@@ -147,47 +148,47 @@ UPDATE `epic_items_modifiers` SET
     `label` = 'Fortuitous', `description` = 'Increases loot drop chance by %d%%',
     `min_magic_value` = 1, `max_magic_value` = 3,
     `min_rare_value`  = 3, `max_rare_value`  = 5,
-    `applied_to_type` = 'sword,axe,club,distance,wand,ammunition,armors,helmets,legs,boots,gloves,shields,amulets and necklaces,rings,belts,quivers,spellbook'
+    `applied_to_type` = 'sword weapons,axe weapons,club weapons,distance weapons,wands,ammunition,armors,helmets,legs,boots,shields,amulets and necklaces,rings,quivers,spellbooks'
 WHERE `effect` = 'ADD_DROP_CHANCE';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Tiger', `description` = 'Increases max health by %d%%',
     `min_magic_value` = 1, `max_magic_value` = 3,
     `min_rare_value`  = 3, `max_rare_value`  = 5,
-    `applied_to_type` = 'sword,axe,club,distance,wand,ammunition,armors,helmets,legs,boots,gloves,shields,amulets and necklaces,rings,belts,quivers,spellbook'
+    `applied_to_type` = 'sword weapons,axe weapons,club weapons,distance weapons,wands,ammunition,armors,helmets,legs,boots,shields,amulets and necklaces,rings,quivers,spellbooks'
 WHERE `effect` = 'ADD_MAX_LIFE';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Vampire', `description` = 'Steals %d%% life on hit',
     `min_magic_value` = 1, `max_magic_value` = 3,
     `min_rare_value`  = 3, `max_rare_value`  = 5,
-    `applied_to_type` = 'sword,axe,club,distance,wand,ammunition,armors,helmets,legs,boots,gloves,shields,amulets and necklaces,rings,belts,quivers,spellbook'
+    `applied_to_type` = 'sword weapons,axe weapons,club weapons,distance weapons,wands,ammunition,armors,helmets,legs,boots,shields,amulets and necklaces,rings,quivers,spellbooks'
 WHERE `effect` = 'ADD_LIFE_STEAL';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Wraith', `description` = 'Steals %d%% mana on hit',
     `min_magic_value` = 1, `max_magic_value` = 3,
     `min_rare_value`  = 3, `max_rare_value`  = 5,
-    `applied_to_type` = 'sword,axe,club,distance,wand,ammunition,armors,helmets,legs,boots,gloves,shields,amulets and necklaces,rings,belts,quivers,spellbook'
+    `applied_to_type` = 'sword weapons,axe weapons,club weapons,distance weapons,wands,ammunition,armors,helmets,legs,boots,shields,amulets and necklaces,rings,quivers,spellbooks'
 WHERE `effect` = 'ADD_MANA_STEAL';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Swiftness', `description` = 'Increases attack speed by %d%%',
     `min_magic_value` = 1,  `max_magic_value` = 5,
     `min_rare_value`  = 5,  `max_rare_value`  = 10,
-    `applied_to_type` = 'sword,axe,club,distance,wand,ammunition,armors,helmets,legs,boots,gloves,shields,amulets and necklaces,rings,belts,quivers,spellbook'
+    `applied_to_type` = 'sword weapons,axe weapons,club weapons,distance weapons,wands,ammunition,armors,helmets,legs,boots,shields,amulets and necklaces,rings,quivers,spellbooks'
 WHERE `effect` = 'ADD_ATTACK_SPEED';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Haste', `description` = 'Increases movement speed by %d',
     `min_magic_value` = 5,  `max_magic_value` = 10,
     `min_rare_value`  = 10, `max_rare_value`  = 20,
-    `applied_to_type` = 'sword,axe,club,distance,wand,ammunition,armors,helmets,legs,boots,gloves,shields,amulets and necklaces,rings,belts,quivers,spellbook'
+    `applied_to_type` = 'sword weapons,axe weapons,club weapons,distance weapons,wands,ammunition,armors,helmets,legs,boots,shields,amulets and necklaces,rings,quivers,spellbooks'
 WHERE `effect` = 'ADD_MOVEMENT_SPEED';
 
 UPDATE `epic_items_modifiers` SET
     `label` = 'Snake', `description` = 'Increases max mana by %d%%',
     `min_magic_value` = 1, `max_magic_value` = 3,
     `min_rare_value`  = 3, `max_rare_value`  = 5,
-    `applied_to_type` = 'sword,axe,club,distance,wand,ammunition,armors,helmets,legs,boots,gloves,shields,amulets and necklaces,rings,belts,quivers,spellbook'
+    `applied_to_type` = 'sword weapons,axe weapons,club weapons,distance weapons,wands,ammunition,armors,helmets,legs,boots,shields,amulets and necklaces,rings,quivers,spellbooks'
 WHERE `effect` = 'ADD_MAX_MANA';
