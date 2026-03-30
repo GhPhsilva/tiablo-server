@@ -34,7 +34,12 @@
       "Bash(find C:/Users/Pedro/Documents/tiablo/canary-map-editor-v4.0-windows -name *.conf -o -name settings* -o -name *.json)",
       "Bash(reg query:*)",
       "Bash(find C:/Users/Pedro/Documents/tiablo/canary-map-editor-v4.0-windows/ -name *.xml -o -name *.conf -o -name *.ini -o -name *.cfg)",
-      "Bash(sort -t: -k2 -n)"
+      "Bash(sort -t: -k2 -n)",
+      "Bash(find /c/Users/Pedro/Documents/tiablo/canary-map-editor-v4.0-windows -name *.h -o -name *.cpp)",
+      "Bash(cmd /c \"dir /b \\\\\"C:\\\\Users\\\\Pedro\\\\Documents\\\\tiablo\\\\canary-map-editor-v4.0-windows\\\\source\\\\\" 2>&1 | findstr /i waypoint\")",
+      "Bash(cmd /c \"dir /s /b \\\\\"C:\\\\Users\\\\Pedro\\\\Documents\\\\tiablo\\\\canary-map-editor-v4.0-windows\\\\source\\\\*.h\\\\\" 2>&1 | findstr /i waypoint\")",
+      "Bash(cmd /c \"findstr /s /i /l \\\\\"waypoint\\\\\" \\\\\"C:\\\\Users\\\\Pedro\\\\Documents\\\\tiablo\\\\canary-map-editor-v4.0-windows\\\\source\\\\*.h\\\\\" 2>&1 | head\")",
+      "Bash(cmd /c \"dir \\\\\"C:\\\\Users\\\\Pedro\\\\Documents\\\\tiablo\\\\canary-map-editor-v4.0-windows\\\\\" /b\")"
     ]
   }
 }
