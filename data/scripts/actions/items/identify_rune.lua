@@ -30,6 +30,5 @@ function action.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	return true
 end
 
-action:id(44614) -- custom ID (requires appearances.dat entry for production)
-action:id(3155)   -- Sudden Death Rune (test proxy)
+action:id(44782) -- custom ID (requires appearances.dat entry for production)
 action:register()

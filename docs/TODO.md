@@ -5,6 +5,7 @@
 ### Cleanup de Testes
 - [ ] Restaurar comportamento original da SD Rune (id=3155) — remover `action:id(3155)` de `identify_rune.lua`
 - [ ] Remover item 44614 de `data/items/items.xml` (placeholder da runa, substituído pelo ID definitivo)
+- [ ] Arrumar description
 
 ### Identify Rune
 - [ ] Criar sprite da runa de identificação e adicioná-la ao `appearances.dat` do client
@@ -22,7 +23,6 @@
 - [ ] Criar itens belt reais no `data/items/items.xml` com `potionbonus`, `armor` e `slottype="belt"`
 
 ### Sprites
-- [ ] Criar `belt.png` (34×34 px) em `client/data/images/game/slots/`
-- [ ] Criar `belt-blessed.png` (34×34 px) em `client/data/images/game/slots/`
 
+- [ ] Criar mais belts
 

@@ -54,7 +54,9 @@
       "Bash(python -c \":*)",
       "Bash(find C:/Users/Pedro/Documents/tiablo/client -name catalog* -o -name *.json)",
       "Bash(find C:/Users/Pedro/Documents/tiablo/client -name *.png)",
-      "Bash(git show:*)"
+      "Bash(git show:*)",
+      "Bash(python -c \"import google.protobuf; print\\(google.protobuf.__version__\\)\")",
+      "Bash(python edit_appearance.py)"
     ]
   }
 }

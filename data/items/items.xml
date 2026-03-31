@@ -75868,8 +75868,20 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weight" value="120" />
 	</item>
 
+	<!-- belts -->
+	<item id="44781" article="a" name="leather belt">
+		<attribute key="type" value="belt"/>
+		<attribute key="slottype" value="belt"/>
+		<attribute key="armor" value="10"/>
+		<attribute key="weight" value="500"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="belt"/>
+		</attribute>
+	</item>
+	<!-- -->
+
 	<!-- Epic Items System -->
-	<item id="44614" article="an" name="identify rune">
+	<item id="44782" article="a" name="identify rune">
 		<attribute key="primarytype" value="other runes"/>
 		<attribute key="weight" value="70"/>
 		<attribute key="showAttributes" value="1"/>
