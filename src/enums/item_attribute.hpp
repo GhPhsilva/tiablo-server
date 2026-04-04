@@ -51,12 +51,18 @@ enum ItemAttribute_t : uint64_t {
 	EPIC_ITEM_ID          = 36, // DEPRECATED — no longer written; kept to avoid serialization breakage
 	EPIC_ITEM_RARITY      = 37, // uint8_t  — references epic_items_rarity.id (0 until identified)
 	EPIC_ITEM_IDENTIFIED  = 38, // bool     — false = unidentified
-	EPIC_MODIFIER_1_ID    = 39, // uint16_t — attack modifier id
+	EPIC_MODIFIER_1_ID    = 39, // uint16_t — modifier id
 	EPIC_MODIFIER_1_VALUE = 40, // int32_t  — rolled value
-	EPIC_MODIFIER_2_ID    = 41, // uint16_t — defense modifier id
+	EPIC_MODIFIER_2_ID    = 41, // uint16_t
 	EPIC_MODIFIER_2_VALUE = 42, // int32_t
-	EPIC_MODIFIER_3_ID    = 43, // uint16_t — support modifier id
+	EPIC_MODIFIER_3_ID    = 43, // uint16_t
 	EPIC_MODIFIER_3_VALUE = 44, // int32_t
+	EPIC_MODIFIER_4_ID    = 45, // uint16_t
+	EPIC_MODIFIER_4_VALUE = 46, // int32_t
+	EPIC_MODIFIER_5_ID    = 47, // uint16_t
+	EPIC_MODIFIER_5_VALUE = 48, // int32_t
+	EPIC_ELEMENT_TYPE     = 49, // int32_t — CombatType_t of the elemental bonus (set at identification)
+	EPIC_ELEMENT_VALUE    = 50, // int32_t — flat elemental damage (set at identification)
 };
 
 enum ItemDecayState_t : uint8_t {

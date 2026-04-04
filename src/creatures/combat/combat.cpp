@@ -82,7 +82,11 @@ CombatDamage Combat::getCombatDamage(std::shared_ptr<Creature> creature, std::sh
 						static_cast<int32_t>(weapon->getWeaponDamage(player, target, tool, true) * maxa + maxb)
 					);
 
-					damage.secondary.type = weapon->getElementType();
+					if (tool->hasAttribute(ItemAttribute_t::EPIC_ELEMENT_VALUE) && tool->hasAttribute(ItemAttribute_t::EPIC_ELEMENT_TYPE)) {
+						damage.secondary.type = static_cast<CombatType_t>(tool->getAttribute<int64_t>(ItemAttribute_t::EPIC_ELEMENT_TYPE));
+					} else {
+						damage.secondary.type = weapon->getElementType();
+					}
 					damage.secondary.value = weapon->getElementDamage(player, target, tool);
 					if (params.useCharges) {
 						auto charges = tool->getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
@@ -584,7 +588,6 @@ void Combat::CombatHealthFunc(std::shared_ptr<Creature> caster, std::shared_ptr<
 
 	if (attackerPlayer) {
 		std::shared_ptr<Item> item = attackerPlayer->getWeapon();
-		damage = applyImbuementElementalDamage(attackerPlayer, item, damage);
 		g_events().eventPlayerOnCombat(attackerPlayer, target, item, damage);
 
 		if (targetPlayer && targetPlayer->getSkull() != SKULL_BLACK) {
@@ -633,35 +636,6 @@ CombatDamage Combat::applyImbuementElementalDamage(std::shared_ptr<Player> attac
 		return damage;
 	}
 
-	if (item->getWeaponType() == WEAPON_AMMO && attackerPlayer && attackerPlayer->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
-		item = attackerPlayer->getInventoryItem(CONST_SLOT_LEFT);
-	}
-
-	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
-		ImbuementInfo imbuementInfo;
-		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
-			continue;
-		}
-
-		if (imbuementInfo.imbuement->combatType == COMBAT_NONE
-			|| damage.primary.type == COMBAT_HEALING
-			|| damage.secondary.type == COMBAT_HEALING) {
-			continue;
-		}
-
-		float damagePercent = imbuementInfo.imbuement->elementDamage / 100.0;
-
-		damage.secondary.type = imbuementInfo.imbuement->combatType;
-		damage.secondary.value = damage.primary.value * (damagePercent);
-		damage.primary.value = damage.primary.value * (1 - damagePercent);
-
-		if (imbuementInfo.imbuement->soundEffect != SoundEffect_t::SILENCE) {
-			g_game().sendSingleSoundEffect(item->getPosition(), imbuementInfo.imbuement->soundEffect, item->getHoldingPlayer());
-		}
-
-		// If damage imbuement is set, we can return without checking other slots
-		break;
-	}
 
 	return damage;
 }

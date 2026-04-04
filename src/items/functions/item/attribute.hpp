@@ -51,6 +51,12 @@ public:
 			case ItemAttribute_t::EPIC_MODIFIER_2_VALUE:
 			case ItemAttribute_t::EPIC_MODIFIER_3_ID:
 			case ItemAttribute_t::EPIC_MODIFIER_3_VALUE:
+			case ItemAttribute_t::EPIC_MODIFIER_4_ID:
+			case ItemAttribute_t::EPIC_MODIFIER_4_VALUE:
+			case ItemAttribute_t::EPIC_MODIFIER_5_ID:
+			case ItemAttribute_t::EPIC_MODIFIER_5_VALUE:
+			case ItemAttribute_t::EPIC_ELEMENT_TYPE:
+			case ItemAttribute_t::EPIC_ELEMENT_VALUE:
 				return true;
 			default:
 				return false;

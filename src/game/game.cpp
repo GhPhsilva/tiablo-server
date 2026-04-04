@@ -7306,6 +7306,31 @@ void Game::applyLifeLeech(
 	auto wheelLeechAmount = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT);
 	uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE) + wheelLeechChance + damage.lifeLeechChance;
 	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + wheelLeechAmount + damage.lifeLeech;
+
+	// Epic item life steal: base chance is set by the modifier (SKILL_LIFE_LEECH_CHANCE),
+	// with an additional bonus of weapon_skill/4 from the item's weapon type.
+	if (lifeSkill > 0) {
+		skills_t weaponSkill = SKILL_FIST;
+		switch (attackerPlayer->getWeaponType()) {
+			case WEAPON_SWORD:
+				weaponSkill = SKILL_SWORD;
+				break;
+			case WEAPON_CLUB:
+				weaponSkill = SKILL_CLUB;
+				break;
+			case WEAPON_AXE:
+				weaponSkill = SKILL_AXE;
+				break;
+			case WEAPON_DISTANCE:
+				weaponSkill = SKILL_DISTANCE;
+				break;
+			default:
+				weaponSkill = SKILL_FIST;
+				break;
+		}
+		lifeChance += static_cast<uint16_t>(attackerPlayer->getSkillLevel(weaponSkill) / 4);
+	}
+
 	if (normal_random(0, 100) >= lifeChance) {
 		return;
 	}
@@ -7324,6 +7349,7 @@ void Game::applyLifeLeech(
 	tmpDamage.origin = ORIGIN_SPELL;
 	tmpDamage.primary.type = COMBAT_HEALING;
 	tmpDamage.primary.value = calculateLeechAmount(realDamage, lifeSkill, affected);
+	tmpParams.aggressive = false;
 
 	Combat::doCombatHealth(nullptr, attackerPlayer, tmpDamage, tmpParams);
 }

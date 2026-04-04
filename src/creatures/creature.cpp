@@ -913,7 +913,7 @@ void Creature::mitigateDamage(const CombatType_t &combatType, BlockType_t &block
 
 void Creature::applyAbsorbDamageModifications(std::shared_ptr<Creature> attacker, int32_t &damage, CombatType_t combatType) const {
 	if (combatType != COMBAT_HEALING && damage != 0) {
-		int32_t value = getAbsorbPercent(combatType);
+		int32_t value = std::min(getAbsorbPercent(combatType), 65);
 		if (value != 0) {
 			damage -= std::round(damage * value / 100.f);
 		}

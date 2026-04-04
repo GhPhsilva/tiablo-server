@@ -835,6 +835,129 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 			setAttribute(ItemAttribute_t::OBTAINCONTAINER, flags);
 			break;
 		}
+
+		// Epic Items System
+		case ATTR_EPIC_ITEM_RARITY: {
+			uint8_t rarity;
+			if (!propStream.read<uint8_t>(rarity)) {
+				return ATTR_READ_ERROR;
+			}
+			setAttribute(ItemAttribute_t::EPIC_ITEM_RARITY, static_cast<int64_t>(rarity));
+			break;
+		}
+		case ATTR_EPIC_ITEM_IDENTIFIED: {
+			uint8_t identified;
+			if (!propStream.read<uint8_t>(identified)) {
+				return ATTR_READ_ERROR;
+			}
+			setAttribute(ItemAttribute_t::EPIC_ITEM_IDENTIFIED, static_cast<int64_t>(identified));
+			break;
+		}
+		case ATTR_EPIC_MODIFIER_1_ID: {
+			uint16_t modId;
+			if (!propStream.read<uint16_t>(modId)) {
+				return ATTR_READ_ERROR;
+			}
+			setAttribute(ItemAttribute_t::EPIC_MODIFIER_1_ID, static_cast<int64_t>(modId));
+			break;
+		}
+		case ATTR_EPIC_MODIFIER_1_VALUE: {
+			int32_t modVal;
+			if (!propStream.read<int32_t>(modVal)) {
+				return ATTR_READ_ERROR;
+			}
+			setAttribute(ItemAttribute_t::EPIC_MODIFIER_1_VALUE, static_cast<int64_t>(modVal));
+			break;
+		}
+		case ATTR_EPIC_MODIFIER_2_ID: {
+			uint16_t modId;
+			if (!propStream.read<uint16_t>(modId)) {
+				return ATTR_READ_ERROR;
+			}
+			setAttribute(ItemAttribute_t::EPIC_MODIFIER_2_ID, static_cast<int64_t>(modId));
+			break;
+		}
+		case ATTR_EPIC_MODIFIER_2_VALUE: {
+			int32_t modVal;
+			if (!propStream.read<int32_t>(modVal)) {
+				return ATTR_READ_ERROR;
+			}
+			setAttribute(ItemAttribute_t::EPIC_MODIFIER_2_VALUE, static_cast<int64_t>(modVal));
+			break;
+		}
+		case ATTR_EPIC_MODIFIER_3_ID: {
+			uint16_t modId;
+			if (!propStream.read<uint16_t>(modId)) {
+				return ATTR_READ_ERROR;
+			}
+			setAttribute(ItemAttribute_t::EPIC_MODIFIER_3_ID, static_cast<int64_t>(modId));
+			break;
+		}
+		case ATTR_EPIC_MODIFIER_3_VALUE: {
+			int32_t modVal;
+			if (!propStream.read<int32_t>(modVal)) {
+				return ATTR_READ_ERROR;
+			}
+			setAttribute(ItemAttribute_t::EPIC_MODIFIER_3_VALUE, static_cast<int64_t>(modVal));
+			break;
+		}
+		case ATTR_EPIC_MODIFIER_4_ID: {
+			uint16_t modId;
+			if (!propStream.read<uint16_t>(modId)) {
+				return ATTR_READ_ERROR;
+			}
+			setAttribute(ItemAttribute_t::EPIC_MODIFIER_4_ID, static_cast<int64_t>(modId));
+			break;
+		}
+		case ATTR_EPIC_MODIFIER_4_VALUE: {
+			int32_t modVal;
+			if (!propStream.read<int32_t>(modVal)) {
+				return ATTR_READ_ERROR;
+			}
+			setAttribute(ItemAttribute_t::EPIC_MODIFIER_4_VALUE, static_cast<int64_t>(modVal));
+			break;
+		}
+		case ATTR_EPIC_MODIFIER_5_ID: {
+			uint16_t modId;
+			if (!propStream.read<uint16_t>(modId)) {
+				return ATTR_READ_ERROR;
+			}
+			setAttribute(ItemAttribute_t::EPIC_MODIFIER_5_ID, static_cast<int64_t>(modId));
+			break;
+		}
+		case ATTR_EPIC_MODIFIER_5_VALUE: {
+			int32_t modVal;
+			if (!propStream.read<int32_t>(modVal)) {
+				return ATTR_READ_ERROR;
+			}
+			setAttribute(ItemAttribute_t::EPIC_MODIFIER_5_VALUE, static_cast<int64_t>(modVal));
+			break;
+		}
+		case ATTR_EPIC_ELEMENT_TYPE: {
+			int32_t elemType;
+			if (!propStream.read<int32_t>(elemType)) {
+				return ATTR_READ_ERROR;
+			}
+			setAttribute(ItemAttribute_t::EPIC_ELEMENT_TYPE, static_cast<int64_t>(elemType));
+			break;
+		}
+		case ATTR_EPIC_ELEMENT_VALUE: {
+			int32_t elemVal;
+			if (!propStream.read<int32_t>(elemVal)) {
+				return ATTR_READ_ERROR;
+			}
+			setAttribute(ItemAttribute_t::EPIC_ELEMENT_VALUE, static_cast<int64_t>(elemVal));
+			break;
+		}
+		case ATTR_LOOTMESSAGE_SUFFIX: {
+			std::string suffix;
+			if (!propStream.readString(suffix)) {
+				return ATTR_READ_ERROR;
+			}
+			setAttribute(ItemAttribute_t::LOOTMESSAGE_SUFFIX, suffix);
+			break;
+		}
+
 		default:
 			return ATTR_READ_ERROR;
 	}
@@ -1025,6 +1148,51 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		g_logger().debug("Reading flag {}, to item id {}", flags, getID());
 		propWriteStream.write<uint32_t>(flags);
 	}
+
+	// Epic Items System
+	if (hasAttribute(ItemAttribute_t::EPIC_ITEM_RARITY)) {
+		propWriteStream.write<uint8_t>(ATTR_EPIC_ITEM_RARITY);
+		propWriteStream.write<uint8_t>(getAttribute<uint8_t>(ItemAttribute_t::EPIC_ITEM_RARITY));
+	}
+	if (hasAttribute(ItemAttribute_t::EPIC_ITEM_IDENTIFIED)) {
+		propWriteStream.write<uint8_t>(ATTR_EPIC_ITEM_IDENTIFIED);
+		propWriteStream.write<uint8_t>(getAttribute<uint8_t>(ItemAttribute_t::EPIC_ITEM_IDENTIFIED));
+	}
+	static const std::pair<ItemAttribute_t, ItemAttribute_t> epicModifierSlots[5] = {
+		{ ItemAttribute_t::EPIC_MODIFIER_1_ID, ItemAttribute_t::EPIC_MODIFIER_1_VALUE },
+		{ ItemAttribute_t::EPIC_MODIFIER_2_ID, ItemAttribute_t::EPIC_MODIFIER_2_VALUE },
+		{ ItemAttribute_t::EPIC_MODIFIER_3_ID, ItemAttribute_t::EPIC_MODIFIER_3_VALUE },
+		{ ItemAttribute_t::EPIC_MODIFIER_4_ID, ItemAttribute_t::EPIC_MODIFIER_4_VALUE },
+		{ ItemAttribute_t::EPIC_MODIFIER_5_ID, ItemAttribute_t::EPIC_MODIFIER_5_VALUE },
+	};
+	static const uint8_t epicModifierIdAttrs[5] = {
+		ATTR_EPIC_MODIFIER_1_ID, ATTR_EPIC_MODIFIER_2_ID, ATTR_EPIC_MODIFIER_3_ID,
+		ATTR_EPIC_MODIFIER_4_ID, ATTR_EPIC_MODIFIER_5_ID,
+	};
+	static const uint8_t epicModifierValueAttrs[5] = {
+		ATTR_EPIC_MODIFIER_1_VALUE, ATTR_EPIC_MODIFIER_2_VALUE, ATTR_EPIC_MODIFIER_3_VALUE,
+		ATTR_EPIC_MODIFIER_4_VALUE, ATTR_EPIC_MODIFIER_5_VALUE,
+	};
+	for (int i = 0; i < 5; ++i) {
+		if (hasAttribute(epicModifierSlots[i].first)) {
+			propWriteStream.write<uint8_t>(epicModifierIdAttrs[i]);
+			propWriteStream.write<uint16_t>(getAttribute<uint16_t>(epicModifierSlots[i].first));
+			propWriteStream.write<uint8_t>(epicModifierValueAttrs[i]);
+			propWriteStream.write<int32_t>(getAttribute<int32_t>(epicModifierSlots[i].second));
+		}
+	}
+	if (hasAttribute(ItemAttribute_t::EPIC_ELEMENT_TYPE)) {
+		propWriteStream.write<uint8_t>(ATTR_EPIC_ELEMENT_TYPE);
+		propWriteStream.write<int32_t>(getAttribute<int32_t>(ItemAttribute_t::EPIC_ELEMENT_TYPE));
+	}
+	if (hasAttribute(ItemAttribute_t::EPIC_ELEMENT_VALUE)) {
+		propWriteStream.write<uint8_t>(ATTR_EPIC_ELEMENT_VALUE);
+		propWriteStream.write<int32_t>(getAttribute<int32_t>(ItemAttribute_t::EPIC_ELEMENT_VALUE));
+	}
+	if (hasAttribute(ItemAttribute_t::LOOTMESSAGE_SUFFIX)) {
+		propWriteStream.write<uint8_t>(ATTR_LOOTMESSAGE_SUFFIX);
+		propWriteStream.writeString(getString(ItemAttribute_t::LOOTMESSAGE_SUFFIX));
+	}
 }
 
 void Item::setOwner(std::shared_ptr<Creature> owner) {
@@ -1178,7 +1346,13 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 			}
 			descriptions.emplace_back("Attack", ss.str());
 		} else if (!it.isRanged() && attack != 0) {
-			if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
+			if (item && item->hasAttribute(ItemAttribute_t::EPIC_ELEMENT_VALUE) && item->hasAttribute(ItemAttribute_t::EPIC_ELEMENT_TYPE)) {
+				ss.str("");
+				int32_t elemVal = item->getAttribute<int32_t>(ItemAttribute_t::EPIC_ELEMENT_VALUE);
+				auto elemType = static_cast<CombatType_t>(item->getAttribute<int64_t>(ItemAttribute_t::EPIC_ELEMENT_TYPE));
+				ss << attack << " physical +" << elemVal << ' ' << getCombatName(elemType);
+				descriptions.emplace_back("Attack", ss.str());
+			} else if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
 				ss.str("");
 				ss << attack << " physical +" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
 				descriptions.emplace_back("Attack", ss.str());
@@ -2636,7 +2810,11 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 				begin = false;
 				s << " (Atk:" << attack;
 
-				if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
+				if (item && item->hasAttribute(ItemAttribute_t::EPIC_ELEMENT_VALUE) && item->hasAttribute(ItemAttribute_t::EPIC_ELEMENT_TYPE)) {
+					int32_t elemVal = item->getAttribute<int32_t>(ItemAttribute_t::EPIC_ELEMENT_VALUE);
+					auto elemType = static_cast<CombatType_t>(item->getAttribute<int64_t>(ItemAttribute_t::EPIC_ELEMENT_TYPE));
+					s << " physical + " << elemVal << ' ' << getCombatName(elemType);
+				} else if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
 					s << " physical + " << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
 				}
 			}

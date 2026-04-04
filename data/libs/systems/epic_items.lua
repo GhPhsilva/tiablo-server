@@ -8,6 +8,17 @@ EpicItems = {
 	raritiesByCode = {}, -- ["magic"] = rarity row
 	modifiers      = {}, -- [id]   = {id, type, effect, effect_type, label, description,
 	                     --           min_magic_value, max_magic_value, min_rare_value, max_rare_value, applied_to_type}
+
+	-- Maps effect name → CombatType_t constant
+	-- Used at identification time to store EPIC_ELEMENT_TYPE on the item permanently.
+	elementCombatTypes = {
+		ADD_COLD_DAMAGE      = COMBAT_ICEDAMAGE,
+		ADD_FIRE_DAMAGE      = COMBAT_FIREDAMAGE,
+		ADD_LIGHTNING_DAMAGE = COMBAT_ENERGYDAMAGE,
+		ADD_HOLY_DAMAGE      = COMBAT_HOLYDAMAGE,
+		ADD_DARKNESS_DAMAGE  = COMBAT_DEATHDAMAGE,
+		ADD_POISON_DAMAGE    = COMBAT_EARTHDAMAGE,
+	},
 }
 
 -- ──────────────────────────────────────────────────────────────────────────────
@@ -111,8 +122,8 @@ function EpicItems.identify(item, player)
 	-- Item type used to filter eligible modifiers
 	local primaryType = itemType:getPrimaryType()
 
-	-- Stat multiplier (random within rarity bounds)
-	local mult = rarity.min_increase + math.random() * (rarity.max_increase - rarity.min_increase)
+	-- Stat multiplier (random within rarity bounds, rounded to 1 decimal place)
+	local mult = math.floor((rarity.min_increase + math.random() * (rarity.max_increase - rarity.min_increase)) * 10 + 0.5) / 10
 
 	-- Filter modifiers whose applied_to_type CSV contains this item's primaryType
 	local eligible = {}
@@ -144,15 +155,38 @@ function EpicItems.identify(item, player)
 		rolledMods[#rolledMods + 1] = { mod = mod, value = value }
 	end
 
-	-- Derive identified name: strip "unidentified " prefix then prepend rarity code
+	-- Derive identified name: strip "unidentified " prefix and any existing rarity prefix
 	local currentName = item:getName()
 	local baseName = currentName:gsub("^unidentified ", "")
+	for code, _ in pairs(EpicItems.raritiesByCode) do
+		baseName = baseName:gsub("^" .. code .. " ", "")
+	end
 	local newName = rarityCode .. " " .. baseName
 
 	-- Apply scaled stats
 	local scaledAttack  = math.floor(baseAttack  * mult)
 	local scaledDefense = math.floor(baseDefense * mult)
 	local scaledArmor   = math.floor(baseArmor   * mult)
+
+	-- ENHANCED_ATTACK: permanently boost scaledAttack by the rolled percentage
+	for _, rolled in ipairs(rolledMods) do
+		if rolled.mod.effect == "ENHANCED_ATTACK" and scaledAttack > 0 then
+			scaledAttack = scaledAttack + math.max(1, math.floor(scaledAttack * rolled.value / 100))
+		end
+	end
+
+	-- ELEMENTAL DAMAGE: store first elemental modifier as a permanent item attribute
+	-- The weapon system reads EPIC_ELEMENT_TYPE/VALUE directly (like a fire sword).
+	local elemCombatType = nil
+	local elemValue = 0
+	for _, rolled in ipairs(rolledMods) do
+		local combatType = EpicItems.elementCombatTypes[rolled.mod.effect]
+		if combatType and scaledAttack > 0 then
+			elemCombatType = combatType
+			elemValue = math.max(1, math.floor(scaledAttack * rolled.value / 100))
+			break
+		end
+	end
 
 	-- Set identification attributes
 	item:setAttribute(ITEM_ATTRIBUTE_EPIC_ITEM_RARITY,     rarity.id)
@@ -164,11 +198,19 @@ function EpicItems.identify(item, player)
 	if scaledDefense > 0 then item:setAttribute(ITEM_ATTRIBUTE_DEFENSE, scaledDefense) end
 	if scaledArmor   > 0 then item:setAttribute(ITEM_ATTRIBUTE_ARMOR,   scaledArmor)   end
 
-	-- Store modifier attributes (up to 3 slots)
+	-- Elemental bonus (stored permanently, handled by C++ weapon system)
+	if elemCombatType then
+		item:setAttribute(ITEM_ATTRIBUTE_EPIC_ELEMENT_TYPE,  elemCombatType)
+		item:setAttribute(ITEM_ATTRIBUTE_EPIC_ELEMENT_VALUE, elemValue)
+	end
+
+	-- Store modifier attributes (up to 5 slots)
 	local modAttrIds = {
 		{ ITEM_ATTRIBUTE_EPIC_MODIFIER_1_ID, ITEM_ATTRIBUTE_EPIC_MODIFIER_1_VALUE },
 		{ ITEM_ATTRIBUTE_EPIC_MODIFIER_2_ID, ITEM_ATTRIBUTE_EPIC_MODIFIER_2_VALUE },
 		{ ITEM_ATTRIBUTE_EPIC_MODIFIER_3_ID, ITEM_ATTRIBUTE_EPIC_MODIFIER_3_VALUE },
+		{ ITEM_ATTRIBUTE_EPIC_MODIFIER_4_ID, ITEM_ATTRIBUTE_EPIC_MODIFIER_4_VALUE },
+		{ ITEM_ATTRIBUTE_EPIC_MODIFIER_5_ID, ITEM_ATTRIBUTE_EPIC_MODIFIER_5_VALUE },
 	}
 	for i, rolled in ipairs(rolledMods) do
 		if modAttrIds[i] then

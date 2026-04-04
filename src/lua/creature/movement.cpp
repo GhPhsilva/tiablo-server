@@ -50,11 +50,13 @@ static void applyEpicModifiers(const std::shared_ptr<Player> &player, const std:
 
 	const int sign = equip ? 1 : -1;
 
-	// Iterate through the 3 modifier slots (attack=slot1, defense=slot2, support=slot3)
-	static const std::pair<ItemAttribute_t, ItemAttribute_t> slots[3] = {
+	// Iterate through the 5 modifier slots
+	static const std::pair<ItemAttribute_t, ItemAttribute_t> slots[5] = {
 		{ ItemAttribute_t::EPIC_MODIFIER_1_ID, ItemAttribute_t::EPIC_MODIFIER_1_VALUE },
 		{ ItemAttribute_t::EPIC_MODIFIER_2_ID, ItemAttribute_t::EPIC_MODIFIER_2_VALUE },
 		{ ItemAttribute_t::EPIC_MODIFIER_3_ID, ItemAttribute_t::EPIC_MODIFIER_3_VALUE },
+		{ ItemAttribute_t::EPIC_MODIFIER_4_ID, ItemAttribute_t::EPIC_MODIFIER_4_VALUE },
+		{ ItemAttribute_t::EPIC_MODIFIER_5_ID, ItemAttribute_t::EPIC_MODIFIER_5_VALUE },
 	};
 
 	for (const auto &[idAttr, valAttr] : slots) {
@@ -81,10 +83,26 @@ static void applyEpicModifiers(const std::shared_ptr<Player> &player, const std:
 			g_game().changePlayerSpeed(player, sign * modVal);
 		} else if (effect == "ADD_DROP_CHANCE") {
 			player->addDropChanceBonus(sign * (static_cast<float>(modVal) / 100.f));
+		} else if (effect == "ADD_FIRE_RESISTENCE") {
+			player->setAbsorbPercent(COMBAT_FIREDAMAGE, sign * modVal);
+		} else if (effect == "ADD_ICE_RESISTENCE") {
+			player->setAbsorbPercent(COMBAT_ICEDAMAGE, sign * modVal);
+		} else if (effect == "ADD_ENERGY_RESISTENCE") {
+			player->setAbsorbPercent(COMBAT_ENERGYDAMAGE, sign * modVal);
+		} else if (effect == "ADD_EARTH_RESISTENCE") {
+			player->setAbsorbPercent(COMBAT_EARTHDAMAGE, sign * modVal);
+		} else if (effect == "ADD_DEATH_RESISTENCE") {
+			player->setAbsorbPercent(COMBAT_DEATHDAMAGE, sign * modVal);
+		} else if (effect == "ADD_HOLY_RESISTENCE") {
+			player->setAbsorbPercent(COMBAT_HOLYDAMAGE, sign * modVal);
+		} else if (effect == "ADD_PHYSICAL_RESISTENCE") {
+			player->setAbsorbPercent(COMBAT_PHYSICALDAMAGE, sign * modVal);
+		} else if (effect == "ADD_LIFE_STEAL") {
+			// modVal is a percentage (e.g. 10 = 10%). calculateLeechAmount divides by 10000, so multiply by 100.
+			// Chance is computed dynamically at hit time from the player's weapon skill (see Game::applyLifeLeech).
+			player->setVarSkill(SKILL_LIFE_LEECH_AMOUNT, sign * modVal * 100);
 		}
-		// TODO: ADD_*_DAMAGE, ADD_*_RESISTENCE, ADD_PHYSICAL_DEFENSE,
-		//       ADD_LIFE_STEAL, ADD_MANA_STEAL, ADD_ATTACK_SPEED
-		//       require combat-system integration (Phase 6 future work)
+		// TODO: ADD_MANA_STEAL, ADD_*_DAMAGE, ADD_PHYSICAL_DEFENSE, ADD_ATTACK_SPEED
 	}
 }
 

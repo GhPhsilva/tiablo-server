@@ -223,8 +223,11 @@ void Weapon::internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 		}
 		damage.primary.type = params.combatType;
 		damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
-		g_logger().info("[1] Weapon::internalUseWeapon - primary damage: {}", damage.primary.value);
-		damage.secondary.type = getElementType();
+		if (item->hasAttribute(ItemAttribute_t::EPIC_ELEMENT_VALUE) && item->hasAttribute(ItemAttribute_t::EPIC_ELEMENT_TYPE)) {
+			damage.secondary.type = static_cast<CombatType_t>(item->getAttribute<int64_t>(ItemAttribute_t::EPIC_ELEMENT_TYPE));
+		} else {
+			damage.secondary.type = getElementType();
+		}
 
 		// Cleave damage
 		uint16_t damagePercent = 100;
@@ -244,7 +247,6 @@ void Weapon::internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 			damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
 			damage.secondary.value = (getElementDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
 		}
-
 		if (g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM, __FUNCTION__) && params.chainCallback) {
 			m_combat->doCombatChain(player, target, params.aggressive);
 		} else {
@@ -534,6 +536,16 @@ bool WeaponMelee::getSkillType(std::shared_ptr<Player> player, std::shared_ptr<I
 }
 
 int32_t WeaponMelee::getElementDamage(std::shared_ptr<Player> player, std::shared_ptr<Creature>, std::shared_ptr<Item> item) const {
+	if (item && item->hasAttribute(ItemAttribute_t::EPIC_ELEMENT_VALUE) && item->hasAttribute(ItemAttribute_t::EPIC_ELEMENT_TYPE)) {
+		int32_t epicElemVal = item->getAttribute<int32_t>(ItemAttribute_t::EPIC_ELEMENT_VALUE);
+		int32_t attackSkill = player->getWeaponSkill(item);
+		float attackFactor = player->getAttackFactor();
+		uint32_t level = player->getLevel();
+		int32_t maxValue = Weapons::getMaxWeaponDamage(level, attackSkill, epicElemVal, attackFactor, true);
+		int32_t minValue = level / 5;
+		return -normal_random(minValue, static_cast<int32_t>(maxValue * player->getVocation()->meleeDamageMultiplier));
+	}
+
 	if (elementType == COMBAT_NONE) {
 		return 0;
 	}
