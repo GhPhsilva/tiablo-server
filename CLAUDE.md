@@ -108,6 +108,20 @@ MySQL/MariaDB. Schema: `schema.sql` (fresh install) or `otserv.sql` (full dump w
 ### Metrics
 Optional OpenTelemetry export via Prometheus or OStream exporters. Config in `config.lua` under metrics section. Grafana dashboards in `metrics/`.
 
+## Custom Additions
+
+### Belt Slot (`CONST_SLOT_BELT = 12`)
+
+A new equipment slot added after `CONST_SLOT_STORE_INBOX = 11`. It is the last slot (`CONST_SLOT_LAST = CONST_SLOT_BELT`).
+
+- **Enum**: `CONST_SLOT_BELT = 12` in `src/creatures/creatures_definitions.hpp`
+- **Bit flag**: `SLOTP_BELT = 1 << 12` in `src/items/items_definitions.hpp`
+- **Item type**: `ITEM_TYPE_BELT` — set via `<attribute key="type" value="belt"/>` in XML
+- **Slot type**: set via `<attribute key="slotType" value="belt"/>` in XML
+- **Included in `armorSlots[]`** — belt abilities (armor, absorbPercent, etc.) are applied in combat
+- **No DB migration required** — `player_items` stores slots as dynamic rows; `sid=12` is simply a new row.
+- **Plan**: `docs/plans/server-belt-slot.md`
+
 ## Code Style
 
 Formatting is enforced via `.clang-format` (4-space indent, C++17 style). Run `clang-format` before committing. Lua style via `.luarc.json`.
