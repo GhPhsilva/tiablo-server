@@ -75867,4 +75867,26 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="valuables" />
 		<attribute key="weight" value="120" />
 	</item>
+
+	<!-- Novos items -->
+
+	<item id="44781" article="a" name="leather belt">
+		<attribute key="type" value="belt"/>
+		<attribute key="slottype" value="belt"/>
+		<attribute key="armor" value="10"/>
+		<attribute key="weight" value="500"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="belt"/>
+		</attribute>
+	</item>
+
+	<item id="44783" article="a" name="leather glove">
+		<attribute key="type" value="gloves"/>
+		<attribute key="slottype" value="gloves"/>
+		<attribute key="armor" value="10"/>
+		<attribute key="weight" value="500"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="gloves"/>
+		</attribute>
+	</item>
 </items>

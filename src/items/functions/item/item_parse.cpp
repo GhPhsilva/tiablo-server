@@ -318,6 +318,8 @@ void ItemParse::parseSlotType(const std::string &tmpStrValue, pugi::xml_attribut
 			itemType.slotPosition |= SLOTP_AMMO;
 		} else if (stringValue == "belt") {
 			itemType.slotPosition |= SLOTP_BELT;
+		} else if (stringValue == "gloves" || stringValue == "glove") {
+			itemType.slotPosition |= SLOTP_GLOVES;
 		} else if (stringValue == "hand") {
 			itemType.slotPosition |= SLOTP_HAND;
 		} else {
@@ -1053,6 +1055,8 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 					moveevent->setSlot(SLOTP_AMMO);
 				} else if (slotName == "belt") {
 					moveevent->setSlot(SLOTP_BELT);
+				} else if (slotName == "gloves" || slotName == "glove") {
+					moveevent->setSlot(SLOTP_GLOVES);
 				} else {
 					g_logger().warn("[{}] unknown slot type '{}'", __FUNCTION__, slotName);
 				}
