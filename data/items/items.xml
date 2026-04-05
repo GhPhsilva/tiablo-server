@@ -75890,7 +75890,31 @@ Granted by TibiaGoals.com"/>
 		</attribute>
 	</item>
 
-	<item id="44780" article="a" name="magic mace">
+	<item id="44780" article="a" name="unidentified magic mace">
+		<attribute key="primarytype" value="club weapons"/>
+		<attribute key="weaponType" value="club"/>
+		<attribute key="attack" value="16"/>
+		<attribute key="defense" value="11"/>
+		<attribute key="weight" value="3800"/>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+
+	<item id="44784" article="a" name="unidentified rare mace">
+		<attribute key="primarytype" value="club weapons"/>
+		<attribute key="weaponType" value="club"/>
+		<attribute key="attack" value="16"/>
+		<attribute key="defense" value="11"/>
+		<attribute key="weight" value="3800"/>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="weaponType" value="club"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+
+	<item id="44785" article="a" name="unidentified epic mace">
 		<attribute key="primarytype" value="club weapons"/>
 		<attribute key="weaponType" value="club"/>
 		<attribute key="attack" value="16"/>

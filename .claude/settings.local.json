@@ -22,7 +22,8 @@
       "Bash(find /c/Users/Pedro/Documents/tiablo/client -name *.cpp -o -name *.h)",
       "Bash(find /c/Users/Pedro/Documents/tiablo/server -name *.lua -type f -exec grep -l \"monsterOnDropLoot\\\\|dropLoot\" {})",
       "Read(//c/Users/Pedro/Documents/tiablo/client/data/modules/game_inventory/**)",
-      "Read(//c/Users/Pedro/Documents/tiablo/client/data/styles/**)"
+      "Read(//c/Users/Pedro/Documents/tiablo/client/data/styles/**)",
+      "Bash(python:*)"
     ]
   }
 }
