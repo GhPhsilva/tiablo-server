@@ -1,10 +1,9 @@
 # TODOs
 
-## Belt Slot
-
-### Sprites
-- [ ] Criar `belt.png` (34×34 px) em `client/data/images/game/slots/`
-- [ ] Criar `belt-blessed.png` (34×34 px) em `client/data/images/game/slots/`
+## Sistemas
+- [ ] Remover imbuiments
+- [ ] Adicionar waypoint sistem (client,server,map)
+- [ ] entender sistema de forja, se é possivel reutilizar ou não
 
 ### Items
 - [ ] Remover item de teste (id=349 "test belt") de `data/items/items.xml`
