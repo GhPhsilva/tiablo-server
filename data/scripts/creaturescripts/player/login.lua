@@ -157,6 +157,7 @@ function playerLoginGlobal.onLogin(player)
 	player:registerEvent("PlayerDeath")
 	player:registerEvent("DropLoot")
 	player:registerEvent("BossParticipation")
+	player:registerEvent("WaypointsOpcode")
 	return true
 end
 
