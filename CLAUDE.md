@@ -122,6 +122,97 @@ A new equipment slot added after `CONST_SLOT_STORE_INBOX = 11`. It is the last s
 - **No DB migration required** — `player_items` stores slots as dynamic rows; `sid=12` is simply a new row.
 - **Plan**: `docs/plans/server-belt-slot.md`
 
+## Extended Opcodes (Server → Client Communication)
+
+Extended opcodes allow the server to send custom data to OTClient via byte `0x32`. They only work when the client has `GameExtendedOpcode` enabled (set in `data/modules/game_features/features.lua`).
+
+### Sending from Server
+
+Use `Player.sendExtendedOpcode(opcode, buffer)` defined in `data/libs/functions/player.lua:55`:
+
+```lua
+player:sendExtendedOpcode(100, "O" .. jsonString)
+```
+
+**Critical:** this function silently returns `false` if `player:isUsingOtClient()` is false (i.e., `player:getClient().os < CLIENTOS_OTCLIENT_LINUX` which is 10). OTClientV8 reports `os=20` (`CLIENTOS_OTCLIENTV8_LINUX`), which passes the check. Always verify with a log when debugging:
+
+```lua
+print("os=" .. player:getClient().os .. " isOtClient=" .. tostring(player:isUsingOtClient()))
+```
+
+### Buffer Format Convention
+
+The first character of the buffer is a status prefix used by the client's JSON opcode system:
+- `"O"` — single complete message (most common)
+- `"S"` / `"P"` / `"E"` — start / part / end of chunked messages
+
+Always prefix with `"O"` for single-packet JSON payloads:
+
+```lua
+player:sendExtendedOpcode(Waypoints.OPCODE, "O" .. json)
+```
+
+### Receiving on Server (Client → Server)
+
+Register a `CreatureEvent` with `onExtendedOpcode`:
+
+```lua
+local handler = CreatureEvent("MyOpcode")
+function handler.onExtendedOpcode(player, opcode, buffer)
+    if opcode ~= MY_OPCODE then return end
+    local action = buffer:match('"action"%s*:%s*"([^"]+)"')
+    -- handle action
+end
+handler:register()
+```
+
+Register the event for the player on login:
+
+```lua
+player:registerEvent("MyOpcode")
+```
+
+### Timing: Do NOT send on login
+
+Sending extended opcodes directly in `onLogin` causes them to arrive **before the client has re-initialized its modules** (the "All modules and scripts were reloaded" message). The opcode will be dropped.
+
+**Correct pattern:** client requests data after `onGameStart` fires:
+- Client: on `onGameStart`, send `{"action":"request"}` via `sendExtendedOpcode`
+- Server: handle `action == "request"`, then send the data
+
+```lua
+-- server: waypoints_opcode.lua
+if action == "request" then
+    Waypoints.sendToPlayer(player)
+    return
+end
+```
+
+### JSON Escaping
+
+Always escape strings before inserting into JSON manually:
+
+```lua
+local function jsonEscape(s)
+    return s:gsub('\\', '\\\\'):gsub('"', '\\"'):gsub('\n', '\\n'):gsub('\r', '')
+end
+```
+
+### Waypoints System Reference
+
+Implementation files:
+- `data/libs/systems/waypoints.lua` — `Waypoints.sendToPlayer`, `Waypoints.unlock`, `Waypoints.teleport`
+- `data/scripts/creaturescripts/player/waypoints_opcode.lua` — receives client opcodes (request, teleport)
+- `data/scripts/migrations/waypoints_migration.lua` — creates `waypoints` + `player_waypoints` tables
+- `data/scripts/migrations/20260407000001_waypoints_add_category_image.lua` — adds `category` + `image` columns
+- `data/scripts/actions/objects/waypoint.lua` — item 8836 unlocks a waypoint (`uid` = waypoint id)
+
+DB schema:
+```sql
+waypoints: id, name, x, y, z, description, category VARCHAR(50), image VARCHAR(255)
+player_waypoints: player_id, waypoint_id
+```
+
 ## Code Style
 
 Formatting is enforced via `.clang-format` (4-space indent, C++17 style). Run `clang-format` before committing. Lua style via `.luarc.json`.
