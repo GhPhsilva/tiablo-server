@@ -157,6 +157,7 @@ const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttribut
 	{ "reflectpercentall", ITEM_PARSE_REFLECTPERCENTALL },
 	{ "primarytype", ITEM_PARSE_PRIMARYTYPE },
 	{ "usedbyhouseguests", ITEM_PARSE_USEDBYGUESTS },
+	{ "enhancedattackspeed", ITEM_PARSE_ENHANCEDATTACKSPEED },
 	{ "script", ITEM_PARSE_SCRIPT },
 };
 
@@ -312,6 +313,7 @@ private:
 	static void parseMagicShieldCapacity(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parsePerfecShot(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseCleavePercent(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
+	static void parseEnhancedAttackSpeed(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseReflectDamage(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseTransformOnUse(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parsePrimaryType(const std::string_view &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType);

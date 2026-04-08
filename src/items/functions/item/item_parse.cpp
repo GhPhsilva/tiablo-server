@@ -73,6 +73,7 @@ void ItemParse::initParse(const std::string &tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseMagicShieldCapacity(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parsePerfecShot(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseCleavePercent(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseEnhancedAttackSpeed(tmpStrValue, valueAttribute, itemType);
 ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseTransformOnUse(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parsePrimaryType(tmpStrValue, valueAttribute, itemType);
@@ -941,6 +942,12 @@ void ItemParse::parseCleavePercent(const std::string &tmpStrValue, pugi::xml_att
 	Abilities &abilities = itemType.getAbilities();
 	if (stringValue == "cleavepercent") {
 		abilities.cleavePercent += pugi::cast<int32_t>(valueAttribute.value());
+	}
+}
+
+void ItemParse::parseEnhancedAttackSpeed(const std::string &tmpStrValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+	if (tmpStrValue == "enhancedattackspeed") {
+		itemType.getAbilities().attackSpeed = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 

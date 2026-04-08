@@ -607,6 +607,10 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 				player->setVarStats(static_cast<stats_t>(s), static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
 			}
 		}
+
+		if (it.abilities->attackSpeed != 0) {
+			player->setVarAttackSpeed(it.abilities->attackSpeed);
+		}
 	}
 
 	// Updates the main backpack as unasigned if there is no item equipped
@@ -679,6 +683,10 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, std:
 		if (item->getStat(static_cast<stats_t>(s))) {
 			player->setVarStats(static_cast<stats_t>(s), -item->getStat(static_cast<stats_t>(s)));
 		}
+	}
+
+	if (it.abilities && it.abilities->attackSpeed != 0) {
+		player->setVarAttackSpeed(-it.abilities->attackSpeed);
 	}
 
 	if (item->getSpeed() != 0) {

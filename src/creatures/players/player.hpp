@@ -756,6 +756,10 @@ public:
 		varSkills[skill] += modifier;
 	}
 
+	void setVarAttackSpeed(int32_t modifier) {
+		varAttackSpeed += modifier;
+	}
+
 	void setVarStats(stats_t stat, int32_t modifier);
 	int32_t getDefaultStats(stats_t stat) const;
 
@@ -2796,6 +2800,7 @@ private:
 	uint32_t manaMax = 0;
 	int32_t varSkills[SKILL_LAST + 1] = {};
 	int32_t varStats[STAT_LAST + 1] = {};
+	int32_t varAttackSpeed = 0;
 	int32_t shopCallback = -1;
 	int32_t MessageBufferCount = 0;
 	int32_t bloodHitCount = 0;
@@ -2926,19 +2931,22 @@ private:
 	uint32_t MAX_ATTACK_SPEED = g_configManager().getNumber(MAX_SPEED_ATTACKONFIST, "Player.hpp::MAX_ATTACK_SPEED");
 
 	uint32_t getAttackSpeed() const {
+		uint32_t base;
 		if (onFistAttackSpeed) {
 			uint32_t baseAttackSpeed = vocation->getAttackSpeed();
 			uint32_t skillLevel = getSkillLevel(SKILL_FIST);
 			uint32_t attackSpeed = baseAttackSpeed - (skillLevel * g_configManager().getNumber(MULTIPLIER_ATTACKONFIST, __FUNCTION__));
-
 			if (attackSpeed < MAX_ATTACK_SPEED) {
 				attackSpeed = MAX_ATTACK_SPEED;
 			}
-
-			return static_cast<uint32_t>(attackSpeed);
+			base = attackSpeed;
 		} else {
-			return vocation->getAttackSpeed();
+			base = vocation->getAttackSpeed();
 		}
+		// varAttackSpeed is in percentage points (e.g. 6 = 6% faster)
+		int32_t msReduction = static_cast<int32_t>(base) * varAttackSpeed / 100;
+		int32_t modified = static_cast<int32_t>(base) - msReduction;
+		return static_cast<uint32_t>(std::max<int32_t>(static_cast<int32_t>(MAX_ATTACK_SPEED), modified));
 	}
 
 	static double_t getPercentLevel(uint64_t count, uint64_t nextLevelCount);

@@ -1330,6 +1330,12 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				descriptions.emplace_back("Cleave", ss.str());
 			}
 
+			if (it.abilities->attackSpeed != 0) {
+				ss.str("");
+				ss << std::showpos << it.abilities->attackSpeed << std::noshowpos << "%";
+				descriptions.emplace_back("Increased Attack Speed", ss.str());
+			}
+
 			if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
 				ss.str("");
 				ss << "Hard Drinking";
@@ -1724,6 +1730,12 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				ss.str("");
 				ss << std::showpos << (it.abilities->cleavePercent) << std::noshowpos << "%";
 				descriptions.emplace_back("Cleave", ss.str());
+			}
+
+			if (it.abilities->attackSpeed != 0) {
+				ss.str("");
+				ss << std::showpos << it.abilities->attackSpeed << std::noshowpos << "%";
+				descriptions.emplace_back("Increased Attack Speed", ss.str());
 			}
 
 			if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
@@ -2294,6 +2306,17 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 				itemDescription << "Cleave " << std::showpos << (itemType.abilities->cleavePercent) << std::noshowpos << "%";
 			}
 
+			if (itemType.abilities->attackSpeed != 0) {
+				if (begin) {
+					begin = false;
+					itemDescription << " (";
+				} else {
+					itemDescription << ", ";
+				}
+
+				itemDescription << "Increased Attack Speed " << std::showpos << itemType.abilities->attackSpeed << std::noshowpos << "%";
+			}
+
 		}
 
 		if (!begin) {
@@ -2594,6 +2617,17 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 
 					s << "cleave " << std::showpos << (it.abilities->cleavePercent) << std::noshowpos << "%";
 				}
+
+				if (it.abilities->attackSpeed != 0) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << "increased attack speed " << std::showpos << it.abilities->attackSpeed << std::noshowpos << "%";
+				}
 			}
 
 			if (!begin) {
@@ -2861,6 +2895,17 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 					}
 
 					s << "Cleave " << std::showpos << (it.abilities->cleavePercent) << std::noshowpos << "%";
+				}
+
+				if (it.abilities->attackSpeed != 0) {
+					if (begin) {
+						begin = false;
+						s << " (";
+					} else {
+						s << ", ";
+					}
+
+					s << "Increased Attack Speed " << std::showpos << it.abilities->attackSpeed << std::noshowpos << "%";
 				}
 			}
 

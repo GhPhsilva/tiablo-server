@@ -57,6 +57,9 @@ public:
 	int32_t perfectShotDamage = 0;
 	uint8_t perfectShotRange = 0;
 
+	// attack speed modifier
+	int32_t attackSpeed = 0; // flat ms modifier to attack interval (positive = faster, negative = penalty)
+
 	bool manaShield = false;
 	bool invisible = false;
 	bool regeneration = false;
