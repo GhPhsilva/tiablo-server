@@ -27,7 +27,8 @@
       "Bash(find C:\\\\Users\\\\Pedro\\\\Documents\\\\tiablo\\\\server\\\\src:*)",
       "Bash(echo \"exit: $?\")",
       "Bash(find:*)",
-      "Bash(xargs cat:*)"
+      "Bash(xargs cat:*)",
+      "Bash(xargs dirname:*)"
     ]
   }
 }

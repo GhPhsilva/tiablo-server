@@ -2130,7 +2130,20 @@ void Combat::applyExtensions(std::shared_ptr<Creature> caster, std::shared_ptr<C
 	auto monster = caster->getMonster();
 	if (player) {
 		chance = player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
-		bonus = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE);
+		bonus = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE); // base stored in DB (default 5000 = 50%) + item bonus
+
+		// Weapon skill (or magic level for wands) contributes to base crit chance (0.25% per level, cap 50%)
+		auto weaponItem = player->getWeapon(true);
+		int32_t critSkillLevel = 0;
+		if (weaponItem && weaponItem->getWeaponType() == WEAPON_WAND) {
+			critSkillLevel = static_cast<int32_t>(player->getMagicLevel());
+		} else {
+			critSkillLevel = player->getWeaponSkill(weaponItem);
+		}
+		if (critSkillLevel > 0) {
+			chance += static_cast<uint16_t>(std::min<int32_t>(critSkillLevel * 25, 5000));
+		}
+
 		if (target) {
 			uint16_t playerCharmRaceid = player->parseRacebyCharm(CHARM_LOW, false, 0);
 			if (playerCharmRaceid != 0) {

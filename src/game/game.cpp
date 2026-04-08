@@ -7272,9 +7272,18 @@ void Game::applyManaLeech(
 	auto wheelLeechChance = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_MANA_LEECH_CHANCE);
 	auto wheelLeechAmount = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_MANA_LEECH_AMOUNT);
 
-	uint16_t manaChance = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_CHANCE) + wheelLeechChance + damage.manaLeechChance;
+	// Mana leech chance scale 0-1000 (each unit = 0.1%)
+	// DB/item/wheel values are in scale 0-100, multiply by 10 to convert
+	int32_t manaChance = (static_cast<int32_t>(attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_CHANCE)) + wheelLeechChance + damage.manaLeechChance) * 10;
 	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) + wheelLeechAmount + damage.manaLeech;
-	if (normal_random(0, 100) >= manaChance) {
+
+	// Wand only: magic level contributes to mana leech chance (0.1% per level, cap 25%)
+	auto weaponItem = attackerPlayer->getWeapon(true);
+	if (weaponItem && weaponItem->getWeaponType() == WEAPON_WAND) {
+		manaChance += std::min<int32_t>(static_cast<int32_t>(attackerPlayer->getMagicLevel()), 250);
+	}
+
+	if (normal_random(0, 1000) >= manaChance) {
 		return;
 	}
 	// Void charm rune
@@ -7294,6 +7303,7 @@ void Game::applyManaLeech(
 	tmpDamage.primary.type = COMBAT_MANADRAIN;
 	tmpDamage.primary.value = calculateLeechAmount(realDamage, manaSkill, affected);
 
+	g_game().addMagicEffect(attackerPlayer->getPosition(), CONST_ME_MAGIC_BLUE);
 	Combat::doCombatMana(nullptr, attackerPlayer, tmpDamage, tmpParams);
 }
 
@@ -7304,9 +7314,20 @@ void Game::applyLifeLeech(
 	// Wheel of destiny bonus - life leech chance and amount
 	auto wheelLeechChance = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_LIFE_LEECH_CHANCE);
 	auto wheelLeechAmount = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT);
-	uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE) + wheelLeechChance + damage.lifeLeechChance;
+	// Life leech chance scale 0-1000 (each unit = 0.1%)
+	// DB/item/wheel values are in scale 0-100, multiply by 10 to convert
+	int32_t lifeChance = (static_cast<int32_t>(attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE)) + wheelLeechChance + damage.lifeLeechChance) * 10;
 	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + wheelLeechAmount + damage.lifeLeech;
-	if (normal_random(0, 100) >= lifeChance) {
+
+	// Weapon skill: 1 unit per level (0.1% per level), cap 250 = 25%
+	// getWeaponSkill() already returns 0 for wands — no special case needed
+	auto weaponItem = attackerPlayer->getWeapon(true);
+	int32_t leechSkillLevel = attackerPlayer->getWeaponSkill(weaponItem);
+	if (leechSkillLevel > 0) {
+		lifeChance += std::min<int32_t>(leechSkillLevel, 250);
+	}
+
+	if (normal_random(0, 1000) >= lifeChance) {
 		return;
 	}
 	if (targetMonster) {
@@ -7324,7 +7345,7 @@ void Game::applyLifeLeech(
 	tmpDamage.origin = ORIGIN_SPELL;
 	tmpDamage.primary.type = COMBAT_HEALING;
 	tmpDamage.primary.value = calculateLeechAmount(realDamage, lifeSkill, affected);
-
+	g_game().addMagicEffect(attackerPlayer->getPosition(), CONST_ME_MAGIC_RED);
 	Combat::doCombatHealth(nullptr, attackerPlayer, tmpDamage, tmpParams);
 }
 

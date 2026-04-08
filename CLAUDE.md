@@ -213,6 +213,158 @@ waypoints: id, name, x, y, z, description, category VARCHAR(50), image VARCHAR(2
 player_waypoints: player_id, waypoint_id
 ```
 
+## Critical Hit System
+
+### Critical Hit Chance (Weapon Skill Based)
+
+Critical hit chance is derived from the player's active weapon skill, not from `SKILL_CRITICAL_HIT_CHANCE` (which is never trained). The formula is applied in `src/creatures/combat/combat.cpp` → `Combat::applyExtensions()`.
+
+**Formula**: `weaponCritChance = min(skillLevel * 25, 5000)` (internal unit: 10000 = 100%)
+
+| Skill level | Crit chance |
+|---|---|
+| 10 | 2.5% |
+| 100 | 25.0% |
+| 200 | 50.0% (cap) |
+
+**Weapon → skill mapping** (via `player->getWeaponSkill(item)`):
+- Sword/Axe/Club → respective melee skill
+- Bow/Crossbow/Spear/Throwing knife (`WEAPON_DISTANCE`/`WEAPON_MISSILE`) → `SKILL_DISTANCE`
+- Wand (`WEAPON_WAND`) → `getMagicLevel()`
+- No weapon → `SKILL_FIST`
+
+Item bonuses from `SKILL_CRITICAL_HIT_CHANCE` (via `varSkills`) stack on top.
+
+### Critical Hit Damage
+
+**Base damage**: stored in `skill_critical_hit_damage` DB column (default `5000` = 50%). The base is no longer hardcoded — it lives in the database.
+
+- Migration `20260408000001_crit_damage_base_to_db.lua` sets all existing players to `5000` and changes the column DEFAULT to `5000` so new characters start with it automatically.
+- `combat.cpp` → `applyExtensions()`: `bonus = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE)` — no hardcoded addition.
+
+**Stack**: item bonuses (`criticalhitdamage` attribute in XML, internal unit 10000 = 100%) add on top via `varSkills`, which is included in `getSkillLevel()`.
+
+**Multiplier formula**: `1.0 + getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) / 10000`
+- No extra items (DB = 5000): `×1.5` (+50%)
+- DB 5000 + item 2500: `×1.75` (+75%)
+- DB 5000 + item 3500: `×1.85` (+85%)
+
+### Protocol & Client Display
+
+`AddPlayerSkills` (`src/server/network/protocol/protocolgame.cpp`) sends `getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE)` directly (the base is already in the skill level). `sendSkills()` is called on item equip/de-equip so the display updates automatically.
+
+Client (`data/modules/game_skills/skills.lua` → `onSkillChange`) formats both as `"X.XX%"` by dividing the internal value by 100.
+
+## Life Leech System
+
+### Life Leech Chance (Weapon Skill Based)
+
+Life leech chance is derived from the player's active weapon skill. The formula is applied in `src/game/game.cpp` → `Game::applyLifeLeech()`, before the chance roll.
+
+**Formula**: `weaponLeechBonus = min(skillLevel, 250)` (internal scale: 0–1000, 0.1% per unit)
+
+| Skill level | Life leech chance |
+|---|---|
+| 10 | 1.0% |
+| 50 | 5.0% |
+| 100 | 10.0% |
+| 200 | 20.0% |
+| 250 | 25.0% (cap) |
+
+**Weapon → skill mapping** (via `player->getWeaponSkill(item)`):
+- Sword/Axe/Club → respective melee skill
+- Bow/Crossbow/Spear/Throwing knife (`WEAPON_DISTANCE`/`WEAPON_MISSILE`) → `SKILL_DISTANCE`
+- Wand (`WEAPON_WAND`) → **no bonus** (returns 0; wands do not contribute to life leech)
+- No weapon → `SKILL_FIST`
+
+Item bonuses from `SKILL_LIFE_LEECH_CHANCE` (via `varSkills`, e.g. imbuements) stack on top.
+
+### Life Leech Scales
+
+| Skill | DB/item scale | Internal roll scale | DB column |
+|---|---|---|---|
+| `SKILL_LIFE_LEECH_CHANCE` (9) | 0–100 | 0–1000 (×10) | `skill_life_leech_chance` |
+| `SKILL_LIFE_LEECH_AMOUNT` (10) | 0–10000 | 0–10000 | `skill_life_leech_amount` |
+
+The chance roll is `normal_random(0, 1000) >= lifeChance`. Item/wheel values are multiplied by 10 when combining. Weapon bonus is added directly (already in 0–1000 scale). Amount uses 10000 = 100% of damage healed.
+
+### Protocol & Client Display
+
+`AddPlayerSkills` (`src/server/network/protocol/protocolgame.cpp`) computes `effectiveLifeLeechChanceDisplay` (base × 10 + weapon skill bonus) and sends it.
+
+Client (`data/modules/game_skills/skills.lua` → `onSkillChange`) formats:
+- `Skill.LifeLeechChance` (9): `string.format("%.2f%%", level / 10)` — divide by 10 (internal scale 0–1000)
+- `Skill.LifeLeechAmount` (10): `string.format("%.2f%%", level / 100)` — divide by 100 (scale 0–10000)
+
+### Testing Notes
+
+- Life leech heals the attacker — if HP is already at max, no change is visible.
+- Use `UPDATE players SET skill_life_leech_chance = 100, skill_life_leech_amount = 10000 WHERE name = '...'` to test at 100% chance and 100% amount, then reconnect.
+- Reduce HP via Lua (`player:addHealth(-5000)`) before attacking to see the heal.
+- Shows `CONST_ME_MAGIC_RED` effect on attacker when it procs.
+
+## Mana Leech System
+
+### Mana Leech Chance (Weapon Skill Based)
+
+Mana leech chance is derived from the player's active weapon skill. The formula is applied in `src/game/game.cpp` → `Game::applyManaLeech()`, before the chance roll.
+
+**Formula**: `weaponLeechBonus = min(skillLevel, 250)` (internal scale: 0–1000, 0.1% per unit)
+
+| Skill level | Mana leech chance |
+|---|---|
+| 10 | 1.0% |
+| 50 | 5.0% |
+| 100 | 10.0% |
+| 200 | 20.0% |
+| 250 | 25.0% (cap) |
+
+**Weapon → skill mapping**:
+- Wand (`WEAPON_WAND`) → `getMagicLevel()` — only wands contribute
+- All other weapons (melee, distance, no weapon) → **no bonus**
+
+Item bonuses from `SKILL_MANA_LEECH_CHANCE` (via `varSkills`, e.g. imbuements) stack on top.
+
+### Mana Leech Scales
+
+| Skill | DB/item scale | Internal roll scale | DB column |
+|---|---|---|---|
+| `SKILL_MANA_LEECH_CHANCE` (11) | 0–100 | 0–1000 (×10) | `skill_mana_leech_chance` |
+| `SKILL_MANA_LEECH_AMOUNT` (12) | 0–10000 | 0–10000 | `skill_mana_leech_amount` |
+
+The chance roll is `normal_random(0, 1000) >= manaChance`. Same scaling as life leech.
+
+### Protocol & Client Display
+
+`AddPlayerSkills` (`src/server/network/protocol/protocolgame.cpp`) computes `effectiveManaLeechChanceDisplay` (base × 10 + weapon/magic level bonus) and sends it. Wands use magic level for display.
+
+Client (`data/modules/game_skills/skills.lua` → `onSkillChange`) formats:
+- `Skill.ManaLeechChance` (11): `string.format("%.2f%%", level / 10)` — divide by 10
+- `Skill.ManaLeechAmount` (12): `string.format("%.2f%%", level / 100)` — divide by 100
+
+### Testing Notes
+
+- Mana leech restores attacker mana — visible even at full HP.
+- Use `UPDATE players SET skill_mana_leech_chance = 100, skill_mana_leech_amount = 10000 WHERE name = '...'` then reconnect.
+- Shows `CONST_ME_MAGIC_BLUE` effect on attacker when it procs.
+
+## Weapon Skill Calculation Pitfall
+
+### `getWeapon()` vs `getWeapon(true)` for Distance Weapons
+
+`Player::getWeapon()` (ignoreAmmo=false) for bows/crossbows returns the **ammo item** (arrow/bolt) from the quiver, not the bow itself. Without a quiver it returns `nullptr`. This means:
+
+- `getWeaponSkill(ammoItem)` → hits `default` case → returns `0`
+- `getWeaponSkill(nullptr)` → returns `SKILL_FIST`
+
+**Rule**: always use `getWeapon(true)` (ignoreAmmo=true) when the goal is to determine the **weapon type/skill** for crit or leech calculations. Use `getWeapon()` only for actual damage calculations where the ammo item is needed.
+
+Affected locations (all use `getWeapon(true)`):
+- `src/creatures/combat/combat.cpp` → `applyExtensions()` — crit chance weapon skill
+- `src/game/game.cpp` → `applyLifeLeech()` — life leech chance weapon skill
+- `src/game/game.cpp` → `applyManaLeech()` — mana leech chance weapon skill
+- `src/server/network/protocol/protocolgame.cpp` → `AddPlayerSkills()` — crit, life leech, mana leech display (three calls)
+
 ## Code Style
 
 Formatting is enforced via `.clang-format` (4-space indent, C++17 style). Run `clang-format` before committing. Lua style via `.luarc.json`.

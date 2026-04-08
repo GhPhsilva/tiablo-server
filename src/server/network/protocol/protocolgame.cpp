@@ -7353,12 +7353,64 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 		}
 	}
 
-	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
-		if (!oldProtocol && (i == SKILL_LIFE_LEECH_CHANCE || i == SKILL_MANA_LEECH_CHANCE)) {
-			continue;
+	// Compute effective crit chance including weapon skill contribution for display
+	uint16_t effectiveCritChanceDisplay = 0;
+	{
+		auto weaponForDisplay = player->getWeapon(true);
+		int32_t critSkillLevel = 0;
+		if (weaponForDisplay && weaponForDisplay->getWeaponType() == WEAPON_WAND) {
+			critSkillLevel = static_cast<int32_t>(player->getMagicLevel());
+		} else {
+			critSkillLevel = player->getWeaponSkill(weaponForDisplay);
 		}
+		int32_t weaponCritBonus = std::min<int32_t>(critSkillLevel * 25, 5000);
+		effectiveCritChanceDisplay = static_cast<uint16_t>(std::min<int32_t>(
+			player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + weaponCritBonus,
+			std::numeric_limits<uint16_t>::max()
+		));
+	}
+
+	// Compute effective life leech chance including weapon skill contribution for display
+	uint16_t effectiveLifeLeechChanceDisplay = 0;
+	{
+		auto weaponForDisplay = player->getWeapon(true);
+		int32_t leechSkillLevel = player->getWeaponSkill(weaponForDisplay); // wands return 0
+		int32_t weaponLeechBonus = std::min<int32_t>(leechSkillLevel, 250);
+		effectiveLifeLeechChanceDisplay = static_cast<uint16_t>(std::min<int32_t>(
+			static_cast<int32_t>(player->getSkillLevel(SKILL_LIFE_LEECH_CHANCE)) * 10 + weaponLeechBonus,
+			std::numeric_limits<uint16_t>::max()
+		));
+	}
+
+	// Compute effective mana leech chance: only wands contribute via magic level
+	uint16_t effectiveManaLeechChanceDisplay = 0;
+	{
+		auto weaponForMana = player->getWeapon(true);
+		int32_t wandBonus = 0;
+		if (weaponForMana && weaponForMana->getWeaponType() == WEAPON_WAND) {
+			wandBonus = std::min<int32_t>(static_cast<int32_t>(player->getMagicLevel()), 250);
+		}
+		effectiveManaLeechChanceDisplay = static_cast<uint16_t>(std::min<int32_t>(
+			static_cast<int32_t>(player->getSkillLevel(SKILL_MANA_LEECH_CHANCE)) * 10 + wandBonus,
+			std::numeric_limits<uint16_t>::max()
+		));
+	}
+
+	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
 		skills_t skill = static_cast<skills_t>(i);
-		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill), std::numeric_limits<uint16_t>::max()));
+		uint16_t skillValue;
+		if (skill == SKILL_CRITICAL_HIT_CHANCE) {
+			skillValue = effectiveCritChanceDisplay;
+		} else if (skill == SKILL_CRITICAL_HIT_DAMAGE) {
+			skillValue = static_cast<uint16_t>(std::min<int32_t>(player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE), std::numeric_limits<uint16_t>::max()));
+		} else if (skill == SKILL_LIFE_LEECH_CHANCE) {
+			skillValue = effectiveLifeLeechChanceDisplay;
+		} else if (skill == SKILL_MANA_LEECH_CHANCE) {
+			skillValue = effectiveManaLeechChanceDisplay;
+		} else {
+			skillValue = static_cast<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill), std::numeric_limits<uint16_t>::max()));
+		}
+		msg.add<uint16_t>(skillValue);
 		msg.add<uint16_t>(player->getBaseSkill(skill));
 	}
 
