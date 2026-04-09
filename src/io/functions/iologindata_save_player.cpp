@@ -290,6 +290,8 @@ bool IOLoginDataSave::savePlayerFirst(std::shared_ptr<Player> player) {
 	query << "`skill_mana_leech_chance_tries` = " << player->skills[SKILL_MANA_LEECH_CHANCE].tries << ",";
 	query << "`skill_mana_leech_amount` = " << player->skills[SKILL_MANA_LEECH_AMOUNT].level << ",";
 	query << "`skill_mana_leech_amount_tries` = " << player->skills[SKILL_MANA_LEECH_AMOUNT].tries << ",";
+	query << "`skill_attack_speed` = " << player->skills[SKILL_ATTACK_SPEED].level << ",";
+	query << "`skill_attack_speed_tries` = " << player->skills[SKILL_ATTACK_SPEED].tries << ",";
 	query << "`manashield` = " << player->getManaShield() << ",";
 	query << "`max_manashield` = " << player->getMaxManaShield() << ",";
 	query << "`xpboost_value` = " << player->getStoreXpBoost() << ",";

@@ -365,6 +365,93 @@ Affected locations (all use `getWeapon(true)`):
 - `src/game/game.cpp` → `applyManaLeech()` — mana leech chance weapon skill
 - `src/server/network/protocol/protocolgame.cpp` → `AddPlayerSkills()` — crit, life leech, mana leech display (three calls)
 
+## Bonus Attack Speed System
+
+### Overview
+
+`SKILL_ATTACK_SPEED = 13` is a static (non-trainable) skill that represents the player's bonus to attack speed. It reduces the attack interval in milliseconds.
+
+**Formula in `getAttackSpeed()` (`src/creatures/players/player.hpp`)**:
+```
+totalBonus_1000 = getSkillLevel(SKILL_ATTACK_SPEED) * 10 + min(weaponSkill, 250)
+msReduction     = base * totalBonus_1000 / 1000
+result          = max(MAX_ATTACK_SPEED, base - msReduction)
+```
+
+### Weapon → Skill Mapping (weapon bonus to display)
+
+Via `player->getWeaponSkill(item)` / mirrored in Lua `attack_speed_opcode.lua`:
+
+- Sword/Axe/Club → respective melee skill
+- Bow/Crossbow/Spear/Throwing knife (`WEAPON_DISTANCE`/`WEAPON_MISSILE`) → `SKILL_DISTANCE`
+- Wand (`WEAPON_WAND`) → `getMagicLevel()`
+- No weapon → `SKILL_FIST`
+
+| Skill/ML level | Weapon bonus (display) |
+|---|---|
+| 10 | 1.0% |
+| 100 | 10.0% |
+| 250 | 25.0% (cap) |
+
+Item bonuses (`enhancedattackspeed` attribute in XML) add to `varSkills[SKILL_ATTACK_SPEED]` (applied as `setVarSkill(SKILL_ATTACK_SPEED, value)` in `movement.cpp`).
+
+### Scales
+
+| Source | Scale | Unit |
+|---|---|---|
+| DB `skill_attack_speed` | 0–100 | % integer |
+| `varSkills[SKILL_ATTACK_SPEED]` (items) | 0–100 | % integer |
+| Weapon bonus | 0–250 | 0.1% per unit (capped at 25%) |
+| Protocol / display | 0–1000 | DB×10 + weaponBonus |
+| Client display | ÷10 | "X.XX%" |
+
+### Protocol & Client Display
+
+**Why extended opcode instead of binary protocol**: The pre-compiled OtClientV8 binary expects the binary skills packet to contain only 13 skills (0–12). Adding skill 13 to the binary loop causes a 4-byte desync that corrupts all subsequent inventory/equipment packets. Instead, attack speed is sent via **extended opcode 101**.
+
+**Flow**:
+1. Client `onGameStart` → `refresh()` sends `"request"` via `protocolGame:sendExtendedOpcode(101, 'request')`
+2. Server `attack_speed_opcode.lua` handles request, computes `DB×10 + weaponBonus`, responds with `player:sendExtendedOpcode(101, tostring(display))`
+3. Client `onAttackSpeedOpcode` receives value, formats as `"X.XX%"` and sets `skillId13`
+4. `refresh()` skips `onSkillChange` for `Skill.AttackSpeed` (would overwrite with 0.00%)
+
+**On equip/deequip**: `movement.cpp` calls `sendSkills()` → `sendAttackSpeedExtendedOpcode()` (C++ method in `protocolgame.cpp`) pushes updated value automatically.
+
+**C++ method** (`src/server/network/protocol/protocolgame.cpp`):
+```cpp
+void ProtocolGame::sendAttackSpeedExtendedOpcode() {
+    if (!player || player->getOperatingSystem() < CLIENTOS_OTCLIENT_LINUX) return;
+    auto weaponForSpeed = player->getWeapon(true);
+    int32_t weaponBonus = std::min<int32_t>(player->getWeaponSkill(weaponForSpeed), 250);
+    uint16_t display = static_cast<uint16_t>(std::min<int32_t>(
+        static_cast<int32_t>(player->getSkillLevel(SKILL_ATTACK_SPEED)) * 10 + weaponBonus,
+        std::numeric_limits<uint16_t>::max()
+    ));
+    NetworkMessage extMsg;
+    extMsg.addByte(0x32);
+    extMsg.addByte(101); // ATTACK_SPEED_OPCODE
+    extMsg.addString(std::to_string(display), "ProtocolGame::sendAttackSpeedExtendedOpcode");
+    writeToOutputBuffer(extMsg);
+}
+```
+
+Client widget ID: `skillId13`, label: "Bonus Attack Speed".
+
+### DB Column
+
+Migration `20260408000002_add_skill_attack_speed.lua` adds:
+```sql
+ALTER TABLE `players` ADD COLUMN `skill_attack_speed` int(11) NOT NULL DEFAULT 0
+ALTER TABLE `players` ADD COLUMN `skill_attack_speed_tries` bigint(20) NOT NULL DEFAULT 0
+```
+
+### Testing Notes
+
+- `UPDATE players SET skill_attack_speed = 50 WHERE name = '...'` then reconnect → display shows 50.0% + weapon bonus
+- Equip weapon with `enhancedattackspeed="10"` → display increases by 10.00%
+- With ML 100 and a wand equipped: weapon bonus = 10.00%
+- With sword skill 250: weapon bonus capped at 25.00%
+
 ## Code Style
 
 Formatting is enforced via `.clang-format` (4-space indent, C++17 style). Run `clang-format` before committing. Lua style via `.luarc.json`.

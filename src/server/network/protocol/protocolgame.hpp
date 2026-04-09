@@ -292,6 +292,7 @@ private:
 	void sendPartyPlayerVocation(std::shared_ptr<Player> target);
 	void sendPlayerVocation(std::shared_ptr<Player> target);
 	void sendSkills();
+	void sendAttackSpeedExtendedOpcode();
 	void sendPing();
 	void sendPingBack();
 	void sendCreatureTurn(std::shared_ptr<Creature> creature, uint32_t stackpos);

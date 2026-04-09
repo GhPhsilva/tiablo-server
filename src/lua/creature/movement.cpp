@@ -609,7 +609,7 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::s
 		}
 
 		if (it.abilities->attackSpeed != 0) {
-			player->setVarAttackSpeed(it.abilities->attackSpeed);
+			player->setVarSkill(SKILL_ATTACK_SPEED, it.abilities->attackSpeed);
 		}
 	}
 
@@ -686,7 +686,7 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> MoveEvent, std:
 	}
 
 	if (it.abilities && it.abilities->attackSpeed != 0) {
-		player->setVarAttackSpeed(-it.abilities->attackSpeed);
+		player->setVarSkill(SKILL_ATTACK_SPEED, -it.abilities->attackSpeed);
 	}
 
 	if (item->getSpeed() != 0) {

@@ -3456,7 +3456,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats() {
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_COMBATSTATS);
 	msg.addByte(0x00);
-	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
+	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_MANA_LEECH_AMOUNT; ++i) {
 		if (!oldProtocol && (i == SKILL_LIFE_LEECH_CHANCE || i == SKILL_MANA_LEECH_CHANCE)) {
 			continue;
 		}
@@ -5874,6 +5874,24 @@ void ProtocolGame::sendSkills() {
 	NetworkMessage msg;
 	AddPlayerSkills(msg);
 	writeToOutputBuffer(msg);
+	sendAttackSpeedExtendedOpcode();
+}
+
+void ProtocolGame::sendAttackSpeedExtendedOpcode() {
+	if (!player || player->getOperatingSystem() < CLIENTOS_OTCLIENT_LINUX) {
+		return;
+	}
+	auto weaponForSpeed = player->getWeapon(true);
+	int32_t weaponBonus = std::min<int32_t>(player->getWeaponSkill(weaponForSpeed), 250);
+	uint16_t display = static_cast<uint16_t>(std::min<int32_t>(
+		static_cast<int32_t>(player->getSkillLevel(SKILL_ATTACK_SPEED)) * 10 + weaponBonus,
+		std::numeric_limits<uint16_t>::max()
+	));
+	NetworkMessage extMsg;
+	extMsg.addByte(0x32);
+	extMsg.addByte(101); // ATTACK_SPEED_OPCODE
+	extMsg.addString(std::to_string(display), "ProtocolGame::sendAttackSpeedExtendedOpcode");
+	writeToOutputBuffer(extMsg);
 }
 
 void ProtocolGame::sendPing() {
@@ -7396,7 +7414,11 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 		));
 	}
 
-	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
+	// Loop sends only the 6 additional skills the client binary supports (7-12).
+	// SKILL_ATTACK_SPEED (13) is intentionally excluded: adding it would cause a
+	// 4-byte protocol desync because the pre-compiled OtClientV8 binary parses
+	// exactly 6 additional skills. Attack speed is displayed via extended opcode.
+	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_MANA_LEECH_AMOUNT; ++i) {
 		skills_t skill = static_cast<skills_t>(i);
 		uint16_t skillValue;
 		if (skill == SKILL_CRITICAL_HIT_CHANCE) {

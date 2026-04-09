@@ -75885,6 +75885,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="slottype" value="gloves"/>
 		<attribute key="armor" value="10"/>
 		<attribute key="weight" value="500"/>
+		<attribute key="enhancedattackspeed" value="20"/>
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="gloves"/>
 		</attribute>
@@ -75896,7 +75897,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="attack" value="16"/>
 		<attribute key="defense" value="11"/>
 		<attribute key="weight" value="3800"/>
-		<attribute key="enhancedattackspeed" value="75"/>
+		<attribute key="enhancedattackspeed" value="20"/>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="weaponType" value="club"/>
 			<attribute key="slot" value="hand"/>

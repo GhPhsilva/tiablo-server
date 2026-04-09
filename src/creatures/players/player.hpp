@@ -756,10 +756,6 @@ public:
 		varSkills[skill] += modifier;
 	}
 
-	void setVarAttackSpeed(int32_t modifier) {
-		varAttackSpeed += modifier;
-	}
-
 	void setVarStats(stats_t stat, int32_t modifier);
 	int32_t getDefaultStats(stats_t stat) const;
 
@@ -2800,7 +2796,6 @@ private:
 	uint32_t manaMax = 0;
 	int32_t varSkills[SKILL_LAST + 1] = {};
 	int32_t varStats[STAT_LAST + 1] = {};
-	int32_t varAttackSpeed = 0;
 	int32_t shopCallback = -1;
 	int32_t MessageBufferCount = 0;
 	int32_t bloodHitCount = 0;
@@ -2943,8 +2938,11 @@ private:
 		} else {
 			base = vocation->getAttackSpeed();
 		}
-		// varAttackSpeed is in percentage points (e.g. 6 = 6% faster)
-		int32_t msReduction = static_cast<int32_t>(base) * varAttackSpeed / 100;
+		// SKILL_ATTACK_SPEED in 0-100 scale (DB+items); weapon bonus in 0-1000 scale (0.1%/level, cap 25%)
+		auto weaponItem = getWeapon(true);
+		int32_t weaponBonus = std::min<int32_t>(getWeaponSkill(weaponItem), 250);
+		int32_t totalBonus_1000 = static_cast<int32_t>(getSkillLevel(SKILL_ATTACK_SPEED)) * 10 + weaponBonus;
+		int32_t msReduction = static_cast<int32_t>(base) * totalBonus_1000 / 1000;
 		int32_t modified = static_cast<int32_t>(base) - msReduction;
 		return static_cast<uint32_t>(std::max<int32_t>(static_cast<int32_t>(MAX_ATTACK_SPEED), modified));
 	}
