@@ -5882,7 +5882,13 @@ void ProtocolGame::sendAttackSpeedExtendedOpcode() {
 		return;
 	}
 	auto weaponForSpeed = player->getWeapon(true);
-	int32_t weaponBonus = std::min<int32_t>(player->getWeaponSkill(weaponForSpeed), 250);
+	int32_t speedSkillLevel = 0;
+	if (weaponForSpeed && weaponForSpeed->getWeaponType() == WEAPON_WAND) {
+		speedSkillLevel = static_cast<int32_t>(player->getMagicLevel());
+	} else {
+		speedSkillLevel = player->getWeaponSkill(weaponForSpeed);
+	}
+	int32_t weaponBonus = std::min<int32_t>(speedSkillLevel, 250);
 	uint16_t display = static_cast<uint16_t>(std::min<int32_t>(
 		static_cast<int32_t>(player->getSkillLevel(SKILL_ATTACK_SPEED)) * 10 + weaponBonus,
 		std::numeric_limits<uint16_t>::max()
