@@ -1258,6 +1258,38 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				skillBoost = true;
 			}
 
+			if (it.abilities->stats[STAT_MAXHITPOINTS]) {
+				if (skillBoost) {
+					ss << ", ";
+				}
+				ss << std::showpos << "max health " << it.abilities->stats[STAT_MAXHITPOINTS] << std::noshowpos;
+				skillBoost = true;
+			}
+
+			if (it.abilities->statsPercent[STAT_MAXHITPOINTS]) {
+				if (skillBoost) {
+					ss << ", ";
+				}
+				ss << "max health " << std::showpos << (it.abilities->statsPercent[STAT_MAXHITPOINTS] - 100) << "%" << std::noshowpos;
+				skillBoost = true;
+			}
+
+			if (it.abilities->stats[STAT_MAXMANAPOINTS]) {
+				if (skillBoost) {
+					ss << ", ";
+				}
+				ss << std::showpos << "max mana " << it.abilities->stats[STAT_MAXMANAPOINTS] << std::noshowpos;
+				skillBoost = true;
+			}
+
+			if (it.abilities->statsPercent[STAT_MAXMANAPOINTS]) {
+				if (skillBoost) {
+					ss << ", ";
+				}
+				ss << "max mana " << std::showpos << (it.abilities->statsPercent[STAT_MAXMANAPOINTS] - 100) << "%" << std::noshowpos;
+				skillBoost = true;
+			}
+
 			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
 				auto skill = item ? item->getSkill(static_cast<skills_t>(i)) : it.getSkill(static_cast<skills_t>(i));
 				if (!skill) {
@@ -1287,6 +1319,30 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				ss.str("");
 				ss << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
 				descriptions.emplace_back("Magic Level", ss.str());
+			}
+
+			if (it.abilities->stats[STAT_MAXHITPOINTS]) {
+				ss.str("");
+				ss << std::showpos << it.abilities->stats[STAT_MAXHITPOINTS] << std::noshowpos;
+				descriptions.emplace_back("Max Health", ss.str());
+			}
+
+			if (it.abilities->statsPercent[STAT_MAXHITPOINTS]) {
+				ss.str("");
+				ss << std::showpos << (it.abilities->statsPercent[STAT_MAXHITPOINTS] - 100) << "%" << std::noshowpos;
+				descriptions.emplace_back("Max Health", ss.str());
+			}
+
+			if (it.abilities->stats[STAT_MAXMANAPOINTS]) {
+				ss.str("");
+				ss << std::showpos << it.abilities->stats[STAT_MAXMANAPOINTS] << std::noshowpos;
+				descriptions.emplace_back("Max Mana", ss.str());
+			}
+
+			if (it.abilities->statsPercent[STAT_MAXMANAPOINTS]) {
+				ss.str("");
+				ss << std::showpos << (it.abilities->statsPercent[STAT_MAXMANAPOINTS] - 100) << "%" << std::noshowpos;
+				descriptions.emplace_back("Max Mana", ss.str());
 			}
 
 			for (uint8_t i = 1; i <= 11; i++) {
@@ -1678,6 +1734,38 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				}
 
 				ss << std::showpos << "magic level " << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+				skillBoost = true;
+			}
+
+			if (it.abilities->stats[STAT_MAXHITPOINTS]) {
+				if (skillBoost) {
+					ss << ", ";
+				}
+				ss << std::showpos << "max health " << it.abilities->stats[STAT_MAXHITPOINTS] << std::noshowpos;
+				skillBoost = true;
+			}
+
+			if (it.abilities->statsPercent[STAT_MAXHITPOINTS]) {
+				if (skillBoost) {
+					ss << ", ";
+				}
+				ss << "max health " << std::showpos << (it.abilities->statsPercent[STAT_MAXHITPOINTS] - 100) << "%" << std::noshowpos;
+				skillBoost = true;
+			}
+
+			if (it.abilities->stats[STAT_MAXMANAPOINTS]) {
+				if (skillBoost) {
+					ss << ", ";
+				}
+				ss << std::showpos << "max mana " << it.abilities->stats[STAT_MAXMANAPOINTS] << std::noshowpos;
+				skillBoost = true;
+			}
+
+			if (it.abilities->statsPercent[STAT_MAXMANAPOINTS]) {
+				if (skillBoost) {
+					ss << ", ";
+				}
+				ss << "max mana " << std::showpos << (it.abilities->statsPercent[STAT_MAXMANAPOINTS] - 100) << "%" << std::noshowpos;
 				skillBoost = true;
 			}
 
@@ -2175,6 +2263,26 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 				itemDescription << "magic level " << std::showpos << itemType.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
 			}
 
+			if (itemType.abilities->stats[STAT_MAXHITPOINTS]) {
+				if (begin) { begin = false; itemDescription << " ("; } else { itemDescription << ", "; }
+				itemDescription << "max health " << std::showpos << itemType.abilities->stats[STAT_MAXHITPOINTS] << std::noshowpos;
+			}
+
+			if (itemType.abilities->statsPercent[STAT_MAXHITPOINTS]) {
+				if (begin) { begin = false; itemDescription << " ("; } else { itemDescription << ", "; }
+				itemDescription << "max health " << std::showpos << (itemType.abilities->statsPercent[STAT_MAXHITPOINTS] - 100) << "%" << std::noshowpos;
+			}
+
+			if (itemType.abilities->stats[STAT_MAXMANAPOINTS]) {
+				if (begin) { begin = false; itemDescription << " ("; } else { itemDescription << ", "; }
+				itemDescription << "max mana " << std::showpos << itemType.abilities->stats[STAT_MAXMANAPOINTS] << std::noshowpos;
+			}
+
+			if (itemType.abilities->statsPercent[STAT_MAXMANAPOINTS]) {
+				if (begin) { begin = false; itemDescription << " ("; } else { itemDescription << ", "; }
+				itemDescription << "max mana " << std::showpos << (itemType.abilities->statsPercent[STAT_MAXMANAPOINTS] - 100) << "%" << std::noshowpos;
+			}
+
 			for (uint8_t i = 1; i <= 11; i++) {
 				if (itemType.abilities->specializedMagicLevel[i]) {
 					if (begin) {
@@ -2505,6 +2613,26 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 					s << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
 				}
 
+				if (it.abilities->stats[STAT_MAXHITPOINTS]) {
+					if (begin) { begin = false; s << " ("; } else { s << ", "; }
+					s << "max health " << std::showpos << it.abilities->stats[STAT_MAXHITPOINTS] << std::noshowpos;
+				}
+
+				if (it.abilities->statsPercent[STAT_MAXHITPOINTS]) {
+					if (begin) { begin = false; s << " ("; } else { s << ", "; }
+					s << "max health " << std::showpos << (it.abilities->statsPercent[STAT_MAXHITPOINTS] - 100) << "%" << std::noshowpos;
+				}
+
+				if (it.abilities->stats[STAT_MAXMANAPOINTS]) {
+					if (begin) { begin = false; s << " ("; } else { s << ", "; }
+					s << "max mana " << std::showpos << it.abilities->stats[STAT_MAXMANAPOINTS] << std::noshowpos;
+				}
+
+				if (it.abilities->statsPercent[STAT_MAXMANAPOINTS]) {
+					if (begin) { begin = false; s << " ("; } else { s << ", "; }
+					s << "max mana " << std::showpos << (it.abilities->statsPercent[STAT_MAXMANAPOINTS] - 100) << "%" << std::noshowpos;
+				}
+
 				for (uint8_t i = 1; i <= 11; i++) {
 					if (it.abilities->specializedMagicLevel[i]) {
 						if (begin) {
@@ -2802,6 +2930,26 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 					}
 
 					s << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+				}
+
+				if (it.abilities->stats[STAT_MAXHITPOINTS]) {
+					if (begin) { begin = false; s << " ("; } else { s << ", "; }
+					s << "max health " << std::showpos << it.abilities->stats[STAT_MAXHITPOINTS] << std::noshowpos;
+				}
+
+				if (it.abilities->statsPercent[STAT_MAXHITPOINTS]) {
+					if (begin) { begin = false; s << " ("; } else { s << ", "; }
+					s << "max health " << std::showpos << (it.abilities->statsPercent[STAT_MAXHITPOINTS] - 100) << "%" << std::noshowpos;
+				}
+
+				if (it.abilities->stats[STAT_MAXMANAPOINTS]) {
+					if (begin) { begin = false; s << " ("; } else { s << ", "; }
+					s << "max mana " << std::showpos << it.abilities->stats[STAT_MAXMANAPOINTS] << std::noshowpos;
+				}
+
+				if (it.abilities->statsPercent[STAT_MAXMANAPOINTS]) {
+					if (begin) { begin = false; s << " ("; } else { s << ", "; }
+					s << "max mana " << std::showpos << (it.abilities->statsPercent[STAT_MAXMANAPOINTS] - 100) << "%" << std::noshowpos;
 				}
 
 				for (uint8_t i = 1; i <= 11; i++) {
