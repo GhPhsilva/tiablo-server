@@ -56,6 +56,12 @@ DB: `schema.sql` (fresh) or `otserv.sql` (full dump). Ports: login 7171, game 71
 - No DB migration — `player_items` uses dynamic rows (`sid=12`)
 - Plan: `docs/plans/server-belt-slot.md`
 
+## Related Projects
+
+| Project | CLAUDE.md |
+|---|---|
+| OTClientV8 (client) | `C:\Users\Pedro\Documents\tiablo\client\CLAUDE.md` |
+
 ## System Documentation
 
 Detailed docs for custom game systems:
