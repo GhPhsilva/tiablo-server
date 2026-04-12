@@ -30,7 +30,8 @@
       "Bash(xargs cat:*)",
       "Bash(xargs dirname:*)",
       "Read(//c/Users/Pedro/.claude/**)",
-      "Read(//c/Users/Pedro/AppData/Roaming/Claude/**)"
+      "Read(//c/Users/Pedro/AppData/Roaming/Claude/**)",
+      "mcp__code-review-graph__semantic_search_nodes_tool"
     ]
   },
   "enabledMcpjsonServers": [
