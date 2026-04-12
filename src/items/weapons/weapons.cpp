@@ -245,8 +245,14 @@ void Weapon::internalUseWeapon(std::shared_ptr<Player> player, std::shared_ptr<I
 			damage.secondary.value = (getElementDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
 		}
 
+		const bool hasCleave = player && player->getCleavePercent() > 0;
 		if (g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM, __FUNCTION__) && params.chainCallback) {
-			m_combat->doCombatChain(player, target, params.aggressive);
+			if (!hasCleave) {
+				m_combat->doCombatChain(player, target, params.aggressive);
+			} else {
+				// Cleave weapon: skip chain spreading but preserve visual/sound effects
+				m_combat->doCombatHealthWithEffects(player, target, damage);
+			}
 		} else {
 			Combat::doCombatHealth(player, target, damage, params);
 		}

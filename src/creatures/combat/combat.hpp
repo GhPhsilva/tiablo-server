@@ -348,6 +348,10 @@ public:
 	void setupChain(const std::shared_ptr<Weapon> &weapon);
 	bool doCombatChain(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, bool aggressive) const;
 
+	void doCombatHealthWithEffects(std::shared_ptr<Creature> caster, std::shared_ptr<Creature> target, CombatDamage &damage) const {
+		doCombatHealth(caster, target, damage, params);
+	}
+
 private:
 	static void doChainEffect(const Position &origin, const Position &pos, uint8_t effect);
 	static std::vector<std::pair<Position, std::vector<uint32_t>>> pickChainTargets(std::shared_ptr<Creature> caster, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool aggressive, bool backtracking, std::shared_ptr<Creature> initialTarget = nullptr);
