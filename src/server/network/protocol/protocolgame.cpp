@@ -5877,6 +5877,7 @@ void ProtocolGame::sendSkills() {
 	AddPlayerSkills(msg);
 	writeToOutputBuffer(msg);
 	sendAttackSpeedExtendedOpcode();
+	sendReflectSkillsExtendedOpcode();
 }
 
 void ProtocolGame::sendAttackSpeedExtendedOpcode() {
@@ -5900,6 +5901,39 @@ void ProtocolGame::sendAttackSpeedExtendedOpcode() {
 	extMsg.addByte(101); // ATTACK_SPEED_OPCODE
 	extMsg.addString(std::to_string(display), "ProtocolGame::sendAttackSpeedExtendedOpcode");
 	writeToOutputBuffer(extMsg);
+}
+
+void ProtocolGame::sendReflectSkillsExtendedOpcode() {
+	if (!player || player->getOperatingSystem() < CLIENTOS_OTCLIENT_LINUX) {
+		return;
+	}
+
+	// Opcode 102: Reflect Damage — includes item reflectpercentall + skill_reflect_damage
+	// Sent as percent * 100 so client can display X.XX% (divide by 100)
+	{
+		uint32_t display = static_cast<uint32_t>(player->getReflectPercent(COMBAT_PHYSICALDAMAGE, false)) * 100;
+		NetworkMessage msg;
+		msg.addByte(0x32);
+		msg.addByte(102);
+		msg.addString(std::to_string(display), "ProtocolGame::sendReflectSkillsExtendedOpcode");
+		writeToOutputBuffer(msg);
+	}
+
+	// Opcode 103: Reflect Chance — 0 when no shield equipped; formula when shield is equipped
+	// Sent as effective_chance * 10 so client can display X.XX% (divide by 10)
+	{
+		uint32_t display = 0;
+		if (player->hasShield()) {
+			int32_t shield = player->getSkillLevel(SKILL_SHIELD);
+			display = player->getSkillLevel(SKILL_REFLECT_CHANCE) * 10
+			        + static_cast<uint32_t>(std::min<int32_t>(shield, 250));
+		}
+		NetworkMessage msg;
+		msg.addByte(0x32);
+		msg.addByte(103);
+		msg.addString(std::to_string(display), "ProtocolGame::sendReflectSkillsExtendedOpcode");
+		writeToOutputBuffer(msg);
+	}
 }
 
 void ProtocolGame::sendPing() {

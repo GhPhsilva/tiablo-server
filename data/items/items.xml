@@ -10252,6 +10252,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="defense" value="21"/>
 		<attribute key="weight" value="6900"/>
+		<attribute key="reflectpercentall" value="100"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection death" value="3"/>
 			<attribute key="elemental protection earth" value="3"/>

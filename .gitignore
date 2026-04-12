@@ -399,3 +399,5 @@ vcpkg_installed
 
 # CLION
 cmake-build-debug*
+# Added by code-review-graph
+.code-review-graph/

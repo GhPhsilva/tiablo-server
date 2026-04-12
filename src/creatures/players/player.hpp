@@ -1433,6 +1433,11 @@ public:
 			client->sendSkills();
 		}
 	}
+	void sendReflectSkillsExtendedOpcode() const {
+		if (client) {
+			client->sendReflectSkillsExtendedOpcode();
+		}
+	}
 	void sendTextMessage(MessageClasses mclass, const std::string &message) const {
 		if (client) {
 			client->sendTextMessage(TextMessage(mclass, message));

@@ -6272,16 +6272,31 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 					}
 				}
 			}
-			double_t primaryReflectPercent = target->getReflectPercent(damage.primary.type, true);
-			int32_t primaryReflectFlat = target->getReflectFlat(damage.primary.type, true);
-			if (primaryReflectPercent > 0 || primaryReflectFlat > 0) {
+			double_t primaryReflectPercentCheck = target->getReflectPercent(damage.primary.type, false);
+			int32_t primaryReflectFlatCheck = target->getReflectFlat(damage.primary.type, false);
+			if (primaryReflectPercentCheck > 0 || primaryReflectFlatCheck > 0) {
+				// Reflect chance roll: players require shield equipped and a successful roll; monsters always reflect.
+				bool reflectPasses = true;
+				if (targetPlayer) {
+					if (!targetPlayer->hasShield()) {
+						reflectPasses = false;
+					} else {
+						int32_t shieldLevel = targetPlayer->getSkillLevel(SKILL_SHIELD);
+						int32_t reflectChanceLvl = targetPlayer->getSkillLevel(SKILL_REFLECT_CHANCE);
+						int32_t effectiveChance = reflectChanceLvl * 10 + std::min<int32_t>(shieldLevel, 250);
+						reflectPasses = (normal_random(0, 999) < effectiveChance);
+					}
+				}
+				if (reflectPasses) {
+				double_t primaryReflectPercent = target->getReflectPercent(damage.primary.type, true);
+				int32_t primaryReflectFlat = target->getReflectFlat(damage.primary.type, true);
 				int32_t distanceX = Position::getDistanceX(target->getPosition(), attacker->getPosition());
 				int32_t distanceY = Position::getDistanceY(target->getPosition(), attacker->getPosition());
-				if (target->getMonster() || damage.primary.type != COMBAT_PHYSICALDAMAGE || primaryReflectPercent > 0 || std::max(distanceX, distanceY) < 2) {
+				// Only reflect melee attacks (distance < 2). Monsters bypass the range check.
+				if (target->getMonster() || std::max(distanceX, distanceY) < 2) {
 					int32_t reflectFlat = -static_cast<int32_t>(primaryReflectFlat);
 					int32_t reflectPercent = std::ceil(damage.primary.value * primaryReflectPercent / 100.);
-					int32_t reflectLimit = std::ceil(attacker->getMaxHealth() * 0.01);
-					damageReflected.primary.value = std::max(-reflectLimit, reflectFlat + reflectPercent);
+					damageReflected.primary.value = reflectFlat + reflectPercent;
 					if (targetPlayer) {
 						damageReflected.primary.type = COMBAT_NEUTRALDAMAGE;
 					} else {
@@ -6293,9 +6308,11 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 					damageReflected.extension = true;
 					damageReflected.exString += " (damage reflection)";
 					damageReflectedParams.combatType = damage.primary.type;
-					damageReflectedParams.aggressive = true;
+					// Non-aggressive so canDoCombat/isProtected doesn't block PvP reflect
+					damageReflectedParams.aggressive = false;
 					canReflect = true;
 				}
+				} // end if (reflectPasses)
 			}
 		}
 	} else {
@@ -6333,8 +6350,7 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 				if (!canReflect) {
 					int32_t reflectFlat = -static_cast<int32_t>(secondaryReflectFlat);
 					int32_t reflectPercent = std::ceil(damage.primary.value * secondaryReflectPercent / 100.);
-					int32_t reflectLimit = std::ceil(attacker->getMaxHealth() * 0.01);
-					damageReflected.primary.value = std::max(-reflectLimit, reflectFlat + reflectPercent);
+					damageReflected.primary.value = reflectFlat + reflectPercent;
 					damageReflected.primary.type = damage.secondary.type;
 					if (!damageReflected.exString.empty()) {
 						damageReflected.exString += ", ";
@@ -6346,7 +6362,7 @@ bool Game::combatBlockHit(CombatDamage &damage, std::shared_ptr<Creature> attack
 					canReflect = true;
 				} else {
 					damageReflected.secondary.type = damage.secondary.type;
-					damageReflected.primary.value = std::ceil(damage.secondary.value * secondaryReflectPercent / 100.) + std::max(-static_cast<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01)), std::max(damage.secondary.value, -(static_cast<int32_t>(secondaryReflectFlat))));
+					damageReflected.primary.value = std::ceil(damage.secondary.value * secondaryReflectPercent / 100.) - static_cast<int32_t>(secondaryReflectFlat);
 				}
 			}
 		}
@@ -9144,6 +9160,13 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string &buffer) {
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
+		return;
+	}
+
+	// Reflect skill opcodes (102, 103) are handled in C++ to avoid needing Lua bindings
+	// for getReflectPercent() and hasShield(). Return early so Lua handler is not called.
+	if (buffer == "request" && (opcode == 102 || opcode == 103)) {
+		player->sendReflectSkillsExtendedOpcode();
 		return;
 	}
 

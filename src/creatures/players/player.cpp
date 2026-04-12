@@ -4136,6 +4136,7 @@ void Player::postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<C
 	if (link == LINK_OWNER) {
 		// calling movement scripts
 		g_moveEvents().onPlayerEquip(getPlayer(), thing->getItem(), static_cast<Slots_t>(index), false);
+		sendReflectSkillsExtendedOpcode();
 	}
 
 	bool requireListUpdate = true;
@@ -4189,6 +4190,7 @@ void Player::postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_pt
 	if (link == LINK_OWNER) {
 		// calling movement scripts
 		g_moveEvents().onPlayerDeEquip(getPlayer(), thing->getItem(), static_cast<Slots_t>(index));
+		sendReflectSkillsExtendedOpcode();
 	}
 
 	bool requireListUpdate = true;
@@ -5535,6 +5537,7 @@ int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 
 int32_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
 	int32_t result = reflectPercent[combatTypeToIndex(combat)];
+	result += static_cast<int32_t>(getSkillLevel(SKILL_REFLECT_DAMAGE));
 	for (const auto item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {

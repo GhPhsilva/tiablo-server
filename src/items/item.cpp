@@ -1318,6 +1318,16 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				descriptions.emplace_back("Damage Reflection", ss.str());
 			}
 
+			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+				if (it.abilities->reflectPercent[i] == 0) {
+					continue;
+				}
+				ss.str("");
+				ss << getCombatName(indexToCombatType(i)) << ' '
+				   << std::showpos << it.abilities->reflectPercent[i] << std::noshowpos << '%';
+				descriptions.emplace_back("Reflect", ss.str());
+			}
+
 			if (it.abilities->speed) {
 				ss.str("");
 				ss << std::showpos << it.abilities->speed << std::noshowpos;
@@ -1724,6 +1734,16 @@ Item::getDescriptions(const ItemType &it, std::shared_ptr<Item> item /*= nullptr
 				ss.str("");
 				ss << it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)];
 				descriptions.emplace_back("Damage Reflection", ss.str());
+			}
+
+			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+				if (it.abilities->reflectPercent[i] == 0) {
+					continue;
+				}
+				ss.str("");
+				ss << getCombatName(indexToCombatType(i)) << ' '
+				   << std::showpos << it.abilities->reflectPercent[i] << std::noshowpos << '%';
+				descriptions.emplace_back("Reflect", ss.str());
 			}
 
 			if (it.abilities->cleavePercent) {
@@ -2201,6 +2221,26 @@ std::string Item::parseShowAttributesDescription(std::shared_ptr<Item> item, con
 				itemDescription << "damage reflection " << std::showpos << itemType.abilities->reflectFlat[0] << std::noshowpos;
 			}
 
+			{
+				int16_t reflShow = itemType.abilities->reflectPercent[0];
+				if (reflShow != 0) {
+					bool allSame = true;
+					for (size_t i = 1; i < COMBAT_COUNT; ++i) {
+						if (itemType.abilities->reflectPercent[i] != reflShow) { allSame = false; break; }
+					}
+					if (allSame) {
+						if (begin) { begin = false; itemDescription << " ("; } else { itemDescription << ", "; }
+						itemDescription << "reflect all " << std::showpos << reflShow << std::noshowpos << "%";
+					} else {
+						for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+							if (itemType.abilities->reflectPercent[i] == 0) continue;
+							if (begin) { begin = false; itemDescription << " ("; } else { itemDescription << ", "; }
+							itemDescription << fmt::format("reflect {} {:+}%", getCombatName(indexToCombatType(i)), itemType.abilities->reflectPercent[i]);
+						}
+					}
+				}
+			}
+
 			int16_t show = itemType.abilities->absorbPercent[0];
 			if (show != 0) {
 				for (size_t i = 1; i < COMBAT_COUNT; ++i) {
@@ -2511,6 +2551,26 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 					s << "damage reflection " << std::showpos << it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)] << std::noshowpos;
 				}
 
+				{
+					int16_t reflShow = it.abilities->reflectPercent[0];
+					if (reflShow != 0) {
+						bool allSame = true;
+						for (size_t i = 1; i < COMBAT_COUNT; ++i) {
+							if (it.abilities->reflectPercent[i] != reflShow) { allSame = false; break; }
+						}
+						if (allSame) {
+							if (begin) { begin = false; s << " ("; } else { s << ", "; }
+							s << "reflect all " << std::showpos << reflShow << std::noshowpos << "%";
+						} else {
+							for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+								if (it.abilities->reflectPercent[i] == 0) continue;
+								if (begin) { begin = false; s << " ("; } else { s << ", "; }
+								s << fmt::format("reflect {} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->reflectPercent[i]);
+							}
+						}
+					}
+				}
+
 				int16_t show = it.abilities->absorbPercent[0];
 				if (show != 0) {
 					for (size_t i = 1; i < COMBAT_COUNT; ++i) {
@@ -2788,6 +2848,26 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, std::
 					}
 
 					s << "damage reflection " << std::showpos << it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)] << std::noshowpos;
+				}
+
+				{
+					int16_t reflShow = it.abilities->reflectPercent[0];
+					if (reflShow != 0) {
+						bool allSame = true;
+						for (size_t i = 1; i < COMBAT_COUNT; ++i) {
+							if (it.abilities->reflectPercent[i] != reflShow) { allSame = false; break; }
+						}
+						if (allSame) {
+							if (begin) { begin = false; s << " ("; } else { s << ", "; }
+							s << "reflect all " << std::showpos << reflShow << std::noshowpos << "%";
+						} else {
+							for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+								if (it.abilities->reflectPercent[i] == 0) continue;
+								if (begin) { begin = false; s << " ("; } else { s << ", "; }
+								s << fmt::format("reflect {} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->reflectPercent[i]);
+							}
+						}
+					}
 				}
 
 				int16_t show = it.abilities->absorbPercent[0];

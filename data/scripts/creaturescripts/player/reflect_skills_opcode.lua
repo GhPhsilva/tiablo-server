@@ -1,0 +1,4 @@
+-- Opcodes 102 (Reflect Damage) and 103 (Reflect Chance) "request" messages are
+-- handled directly in C++ (Game::parsePlayerExtendedOpcode) because the correct
+-- values require getReflectPercent() and hasShield(), which are not exposed to Lua.
+-- This file intentionally registers no handler for those opcodes.
