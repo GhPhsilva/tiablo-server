@@ -28,7 +28,12 @@
       "Bash(echo \"exit: $?\")",
       "Bash(find:*)",
       "Bash(xargs cat:*)",
-      "Bash(xargs dirname:*)"
+      "Bash(xargs dirname:*)",
+      "Read(//c/Users/Pedro/.claude/**)",
+      "Read(//c/Users/Pedro/AppData/Roaming/Claude/**)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "code-review-graph"
+  ]
 }
